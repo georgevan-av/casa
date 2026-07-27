@@ -28,93 +28,34 @@
             --glow-gold:0 0 20px rgba(212,168,83,.15);
         }
         html,body{height:100%;overflow:hidden}
-        body{
-            font-family:'Inter',-apple-system,'SF Pro Display','Segoe UI',sans-serif;
-            background:var(--bg);color:var(--text);line-height:1.5;
-            -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-        }
+        body{font-family:'Inter',-apple-system,'SF Pro Display','Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
         .app{display:flex;flex-direction:column;height:100%;height:100dvh;background:var(--bg)}
 
-        /* ─── TOPBAR ─── */
-        .topbar{
-            background:linear-gradient(180deg,rgba(18,21,28,.98),rgba(18,21,28,.92));
-            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-            border-bottom:1px solid var(--border);
-            padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top,0px));
-            display:flex;align-items:center;gap:12px;flex-shrink:0;z-index:20;
-        }
-        .logo{
-            font-size:1.15rem;font-weight:800;letter-spacing:-.3px;
-            display:flex;align-items:center;gap:10px;
-            background:linear-gradient(135deg,var(--gold),var(--gold2));
-            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-            background-clip:text;
-        }
-        .logo-icon{
-            width:30px;height:30px;border-radius:8px;
-            background:linear-gradient(135deg,var(--gold),var(--gold2));
-            display:flex;align-items:center;justify-content:center;
-            font-size:.85rem;-webkit-text-fill-color:#0a0c10;
-            box-shadow:0 2px 8px rgba(212,168,83,.3);
-        }
+        .topbar{background:linear-gradient(180deg,rgba(18,21,28,.98),rgba(18,21,28,.92));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:12px;flex-shrink:0;z-index:20}
+        .logo{font-size:1.15rem;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .logo-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(212,168,83,.3)}
+        .logo-icon svg{width:16px;height:16px;color:#0a0c10;stroke-width:2.5}
 
-        /* ─── CONTENT ─── */
-        .content{
-            flex:1;overflow-y:auto;overflow-x:hidden;
-            padding:18px 16px;
-            padding-bottom:calc(var(--nav-h) + 24px + var(--safe-b));
-            -webkit-overflow-scrolling:touch;
-        }
+        .content{flex:1;overflow-y:auto;overflow-x:hidden;padding:18px 16px;padding-bottom:calc(var(--nav-h) + 24px + var(--safe-b));-webkit-overflow-scrolling:touch}
 
-        /* ─── BOTTOM NAV ─── */
-        .bottom-nav{
-            position:fixed;bottom:0;left:0;right:0;
-            background:linear-gradient(180deg,rgba(18,21,28,.95),rgba(12,14,20,.98));
-            backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-            border-top:1px solid var(--border);
-            display:flex;z-index:50;padding-bottom:var(--safe-b);
-        }
-        .bn-item{
-            flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
-            padding:10px 4px 8px;cursor:pointer;color:var(--text4);font-size:.6rem;
-            font-weight:600;letter-spacing:.4px;text-transform:uppercase;
-            transition:all .2s cubic-bezier(.4,0,.2,1);
-            -webkit-user-select:none;user-select:none;position:relative;
-        }
-        .bn-item::after{
-            content:'';position:absolute;top:0;left:50%;width:0;height:2px;
-            background:linear-gradient(90deg,var(--emerald),var(--emerald2));
-            border-radius:0 0 2px 2px;transition:all .25s cubic-bezier(.4,0,.2,1);
-            transform:translateX(-50%);
-        }
-        .bn-item .bn-icon{font-size:1.25rem;transition:all .2s cubic-bezier(.4,0,.2,1);filter:grayscale(.8) opacity:.5}
+        .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(180deg,rgba(18,21,28,.95),rgba(12,14,20,.98));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;z-index:50;padding-bottom:var(--safe-b)}
+        .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 8px;cursor:pointer;color:var(--text4);font-size:.58rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;transition:all .2s cubic-bezier(.4,0,.2,1);-webkit-user-select:none;user-select:none;position:relative}
+        .bn-item::after{content:'';position:absolute;top:0;left:50%;width:0;height:2px;background:linear-gradient(90deg,var(--emerald),var(--emerald2));border-radius:0 0 2px 2px;transition:all .25s cubic-bezier(.4,0,.2,1);transform:translateX(-50%)}
+        .bn-item .bn-icon{display:flex;align-items:center;justify-content:center;transition:all .2s cubic-bezier(.4,0,.2,1);opacity:.4}
+        .bn-item .bn-icon svg{width:22px;height:22px;stroke-width:1.8}
         .bn-item.active{color:var(--emerald)}
         .bn-item.active::after{width:24px}
-        .bn-item.active .bn-icon{transform:translateY(-2px) scale(1.1);filter:none}
+        .bn-item.active .bn-icon{transform:translateY(-2px) scale(1.1);opacity:1}
         .bn-item:active .bn-icon{transform:scale(.85)}
 
-        /* ─── PAGES ─── */
         .page{display:none;animation:fadeIn .3s ease}
         .page.active{display:block}
         @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-        .page-title{
-            font-size:1.5rem;font-weight:800;letter-spacing:-.5px;margin-bottom:2px;
-            background:linear-gradient(135deg,var(--text),var(--text2));
-            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-        }
+        .page-title{font-size:1.5rem;font-weight:800;letter-spacing:-.5px;margin-bottom:2px;background:linear-gradient(135deg,var(--text),var(--text2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
         .page-sub{font-size:.8rem;color:var(--text3);margin-bottom:20px;font-weight:400}
 
-        /* ─── SUMMARY CARDS ─── */
-        .sum-card{
-            background:linear-gradient(135deg,var(--surface),var(--surface2));
-            border:1px solid var(--border);border-radius:16px;
-            padding:18px 20px;margin-bottom:12px;position:relative;overflow:hidden;
-            transition:transform .2s,box-shadow .2s;
-        }
-        .sum-card::before{
-            content:'';position:absolute;top:0;left:0;right:0;height:1px;
-            background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);
-        }
+        .sum-card{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:12px;position:relative;overflow:hidden}
+        .sum-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent)}
         .sum-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 3px 3px 0}
         .sum-card.c-green::after{background:linear-gradient(180deg,var(--emerald),var(--emerald2))}
         .sum-card.c-red::after{background:linear-gradient(180deg,var(--ruby),var(--ruby2))}
@@ -124,269 +65,149 @@
         .sum-card.c-green{box-shadow:var(--glow-green)}
         .sum-card.c-red{box-shadow:var(--glow-red)}
         .sum-card.c-amber{box-shadow:var(--glow-gold)}
-        .sum-label{font-size:.7rem;color:var(--text3);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.8px}
+        .sum-label{font-size:.7rem;color:var(--text3);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;gap:6px}
+        .sum-label svg{width:14px;height:14px;opacity:.5}
         .sum-val{font-size:1.7rem;font-weight:800;letter-spacing:-.8px;line-height:1.2}
-        .sum-val.green{color:var(--emerald)}
-        .sum-val.red{color:var(--ruby)}
-        .sum-val.blue{color:var(--sapphire)}
-        .sum-val.amber{color:var(--gold)}
+        .sum-val.green{color:var(--emerald)}.sum-val.red{color:var(--ruby)}.sum-val.blue{color:var(--sapphire)}.sum-val.amber{color:var(--gold)}
         .sum-sub{font-size:.7rem;color:var(--text4);margin-top:4px;font-weight:500}
         .sum-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-        /* ─── CARD ─── */
-        .card{
-            background:linear-gradient(135deg,var(--surface),var(--surface2));
-            border:1px solid var(--border);border-radius:16px;
-            overflow:hidden;margin-bottom:14px;
-        }
-        .card-head{
-            display:flex;justify-content:space-between;align-items:center;
-            padding:16px 18px;border-bottom:1px solid var(--border);
-        }
-        .card-head h3{font-size:.9rem;font-weight:700;color:var(--text2)}
+        .card{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px}
+        .card-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--border)}
+        .card-head h3{font-size:.9rem;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:8px}
+        .card-head h3 svg{width:16px;height:16px;opacity:.4}
 
-        /* ─── LIST ITEMS ─── */
-        .item{
-            padding:14px 18px;border-bottom:1px solid var(--border);
-            display:flex;justify-content:space-between;align-items:center;gap:12px;
-            transition:background .15s;
-        }
+        .item{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;transition:background .15s}
         .item:last-child{border-bottom:none}
         .item:active{background:rgba(255,255,255,.02)}
         .item-info{flex:1;min-width:0}
         .item-name{font-size:.88rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
         .item-meta{font-size:.7rem;color:var(--text3);margin-top:3px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-        .tag{
-            display:inline-flex;padding:3px 10px;border-radius:6px;
-            font-size:.65rem;font-weight:700;letter-spacing:.3px;text-transform:uppercase;
-        }
+        .tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:.65rem;font-weight:700;letter-spacing:.3px;text-transform:uppercase}
+        .tag svg{width:11px;height:11px}
         .tag-green{background:var(--emerald-bg);color:var(--emerald);border:1px solid rgba(52,211,153,.15)}
         .tag-red{background:var(--ruby-bg);color:var(--ruby);border:1px solid rgba(248,113,113,.15)}
         .tag-amber{background:var(--gold-bg);color:var(--gold);border:1px solid rgba(212,168,83,.15)}
         .tag-blue{background:var(--sapphire-bg);color:var(--sapphire);border:1px solid rgba(96,165,250,.15)}
         .item-val{font-size:.95rem;font-weight:700;white-space:nowrap}
-        .item-val.green{color:var(--emerald)}
-        .item-val.red{color:var(--ruby)}
-        .item-val.amber{color:var(--gold)}
+        .item-val.green{color:var(--emerald)}.item-val.red{color:var(--ruby)}.item-val.amber{color:var(--gold)}
         .item-actions{display:flex;gap:4px;flex-shrink:0}
-        .item-actions button{
-            width:34px;height:34px;border-radius:8px;border:1px solid var(--border);
-            cursor:pointer;display:flex;align-items:center;justify-content:center;
-            font-size:.9rem;background:var(--surface2);color:var(--text3);
-            transition:all .15s;
-        }
+        .item-actions button{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--surface2);color:var(--text3);transition:all .15s}
+        .item-actions button svg{width:15px;height:15px}
         .item-actions button:active{transform:scale(.88);background:var(--surface3)}
         .btn-del:active{background:var(--ruby-bg)!important;color:var(--ruby)!important;border-color:rgba(248,113,113,.2)!important}
 
-        /* ─── FORMS ─── */
-        .add-btn{
-            width:100%;padding:16px;border-radius:14px;
-            border:1.5px dashed var(--border2);
-            background:transparent;color:var(--text3);font-size:.85rem;font-weight:600;
-            cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
-            transition:all .2s;font-family:inherit;margin-bottom:14px;
-            letter-spacing:.2px;
-        }
+        .add-btn{width:100%;padding:16px;border-radius:14px;border:1.5px dashed var(--border2);background:transparent;color:var(--text3);font-size:.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;font-family:inherit;margin-bottom:14px;letter-spacing:.2px}
+        .add-btn svg{width:18px;height:18px}
         .add-btn:active{border-color:var(--emerald);color:var(--emerald);background:var(--emerald-bg)}
 
-        .form-card{
-            background:linear-gradient(135deg,var(--surface),var(--surface2));
-            border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;
-        }
+        .form-card{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px}
         .form-card h3{font-size:.9rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;color:var(--text2)}
+        .form-card h3 svg{width:16px;height:16px;opacity:.5}
         .field{margin-bottom:14px}
-        .field label{
-            display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;
-            color:var(--text3);margin-bottom:6px;font-weight:700;
-        }
-        .field input,.field select{
-            width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);
-            background:var(--surface3);color:var(--text);font-size:.88rem;outline:none;
-            transition:all .2s;font-family:inherit;
-        }
+        .field label{display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:6px;font-weight:700}
+        .field input,.field select{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface3);color:var(--text);font-size:.88rem;outline:none;transition:all .2s;font-family:inherit}
         .field input:focus,.field select:focus{border-color:var(--emerald);box-shadow:0 0 0 3px rgba(52,211,153,.1)}
         .field input[readonly]{background:var(--surface4);color:var(--text2);cursor:not-allowed}
         .field input.calc{background:linear-gradient(135deg,var(--gold-bg),rgba(212,168,83,.04));color:var(--gold);font-weight:700;border-color:rgba(212,168,83,.2)}
         .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-        .btn{
-            padding:13px 22px;border-radius:12px;border:none;cursor:pointer;
-            font-size:.88rem;font-weight:700;display:inline-flex;align-items:center;
-            justify-content:center;gap:8px;transition:all .2s cubic-bezier(.4,0,.2,1);
-            font-family:inherit;width:100%;letter-spacing:.3px;
-        }
+        .btn{padding:13px 22px;border-radius:12px;border:none;cursor:pointer;font-size:.88rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:all .2s cubic-bezier(.4,0,.2,1);font-family:inherit;width:100%;letter-spacing:.3px}
+        .btn svg{width:16px;height:16px}
         .btn:active{transform:scale(.97)}
-        .btn-green{
-            background:linear-gradient(135deg,var(--emerald),#22c55e);color:#0a0c10;
-            box-shadow:0 4px 15px rgba(52,211,153,.25);
-        }
+        .btn-green{background:linear-gradient(135deg,var(--emerald),#22c55e);color:#0a0c10;box-shadow:0 4px 15px rgba(52,211,153,.25)}
         .btn-green:active{box-shadow:0 2px 8px rgba(52,211,153,.15)}
         .btn-red{background:var(--ruby-bg);color:var(--ruby);border:1px solid rgba(248,113,113,.15)}
         .btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
         .btn-sm{padding:9px 16px;font-size:.78rem;width:auto}
         .btn-row{display:flex;gap:8px;margin-top:14px}.btn-row .btn{flex:1}
 
-        /* ─── CAMERA / OCR ─── */
-        .camera-box{
-            background:linear-gradient(135deg,var(--surface),var(--surface2));
-            border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px;
-        }
-        .camera-trigger{
-            padding:32px 16px;text-align:center;cursor:pointer;position:relative;
-        }
-        .camera-trigger .cam-icon{font-size:3rem;display:block;margin-bottom:10px;opacity:.6}
+        .camera-box{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px}
+        .camera-trigger{padding:32px 16px;text-align:center;cursor:pointer;position:relative}
+        .camera-trigger .cam-icon{display:flex;align-items:center;justify-content:center;margin:0 auto 10px;opacity:.5}
+        .camera-trigger .cam-icon svg{width:48px;height:48px;stroke-width:1.5}
         .camera-trigger p{font-size:.88rem;color:var(--text2);font-weight:600}
         .camera-trigger .cam-sub{font-size:.72rem;color:var(--text3);margin-top:4px}
         .camera-view{display:none;position:relative;background:#000}
         .camera-view video{width:100%;display:block;object-fit:cover;max-height:50vh}
         .camera-view canvas{display:none}
-        .camera-overlay{
-            position:absolute;bottom:0;left:0;right:0;
-            padding:18px;display:flex;flex-direction:column;align-items:center;gap:12px;
-            background:linear-gradient(transparent,rgba(0,0,0,.85));
-        }
-        .camera-overlay .hint{
-            font-size:.75rem;color:rgba(255,255,255,.7);text-align:center;
-            background:rgba(0,0,0,.5);padding:8px 14px;border-radius:10px;
-            backdrop-filter:blur(8px);
-        }
-        .capture-btn{
-            width:68px;height:68px;border-radius:50%;border:4px solid rgba(255,255,255,.9);
-            background:rgba(255,255,255,.15);cursor:pointer;transition:all .15s;
-            display:flex;align-items:center;justify-content:center;font-size:1.6rem;
-            backdrop-filter:blur(4px);
-        }
+        .camera-overlay{position:absolute;bottom:0;left:0;right:0;padding:18px;display:flex;flex-direction:column;align-items:center;gap:12px;background:linear-gradient(transparent,rgba(0,0,0,.85))}
+        .camera-overlay .hint{font-size:.75rem;color:rgba(255,255,255,.7);text-align:center;background:rgba(0,0,0,.5);padding:8px 14px;border-radius:10px;backdrop-filter:blur(8px)}
+        .capture-btn{width:68px;height:68px;border-radius:50%;border:4px solid rgba(255,255,255,.9);background:rgba(255,255,255,.15);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+        .capture-btn svg{width:28px;height:28px;color:#fff}
         .capture-btn:active{transform:scale(.9);background:rgba(255,255,255,.3)}
-        .camera-close{
-            position:absolute;top:12px;right:12px;z-index:5;
-            width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.15);
-            background:rgba(0,0,0,.5);color:#fff;font-size:1.1rem;cursor:pointer;
-            display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);
-        }
+        .camera-close{position:absolute;top:12px;right:12px;z-index:5;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.5);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+        .camera-close svg{width:18px;height:18px}
         .camera-loading{display:none;padding:28px 16px;text-align:center}
         .camera-loading.active{display:block}
-        .loading-spinner{
-            width:44px;height:44px;border:3px solid var(--surface4);border-top-color:var(--emerald);
-            border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px;
-        }
+        .loading-spinner{width:44px;height:44px;border:3px solid var(--surface4);border-top-color:var(--emerald);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
         @keyframes spin{to{transform:rotate(360deg)}}
         .loading-text{font-size:.82rem;color:var(--text3);font-weight:500}
         .loading-pct{font-size:1.5rem;font-weight:800;color:var(--emerald);margin-top:4px}
 
-        /* ─── OCR RESULTS ─── */
         .ocr-results{display:none;padding:16px 18px;border-top:1px solid var(--border)}
         .ocr-results.show{display:block}
         .ocr-title{font-size:.7rem;color:var(--text3);margin-bottom:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
-        .ocr-item{
-            display:flex;justify-content:space-between;align-items:center;
-            padding:12px 14px;border-radius:12px;margin-bottom:6px;cursor:pointer;
-            transition:all .15s;border:1px solid transparent;
-        }
+        .ocr-item{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:12px;margin-bottom:6px;cursor:pointer;transition:all .15s;border:1px solid transparent}
         .ocr-item:active{background:var(--surface3)}
         .ocr-item.selected{background:var(--emerald-bg);border-color:rgba(52,211,153,.2);box-shadow:var(--glow-green)}
         .ocr-item .ocr-name{font-size:.85rem;font-weight:600;flex:1;color:var(--text)}
         .ocr-item .ocr-price{font-size:.95rem;font-weight:800;color:var(--gold);margin-left:10px;white-space:nowrap}
-        .ocr-item .ocr-check{
-            width:24px;height:24px;border-radius:50%;border:2px solid var(--border2);
-            margin-left:8px;display:flex;align-items:center;justify-content:center;
-            font-size:.7rem;flex-shrink:0;transition:all .2s;
-        }
-        .ocr-item.selected .ocr-check{border-color:var(--emerald);background:var(--emerald);color:#0a0c10}
+        .ocr-item .ocr-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--border2);margin-left:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+        .ocr-item .ocr-check svg{width:12px;height:12px;opacity:0;color:#0a0c10}
+        .ocr-item.selected .ocr-check{border-color:var(--emerald);background:var(--emerald)}
+        .ocr-item.selected .ocr-check svg{opacity:1}
         .ocr-edit-zone{display:none;padding:14px 0 0}
         .ocr-edit-zone.show{display:block}
         .ocr-edit-zone .field{margin-bottom:10px}
-        .ocr-edit-zone .field input{
-            width:100%;padding:11px 14px;border-radius:10px;border:1px solid rgba(52,211,153,.3);
-            background:var(--emerald-bg);color:var(--emerald);font-size:.9rem;font-weight:600;outline:none;
-        }
+        .ocr-edit-zone .field input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid rgba(52,211,153,.3);background:var(--emerald-bg);color:var(--emerald);font-size:.9rem;font-weight:600;outline:none}
         .ocr-edit-zone .field label{color:var(--emerald);font-size:.65rem}
-        .ocr-raw{
-            background:var(--surface3);border-radius:8px;padding:10px 14px;
-            font-size:.7rem;color:var(--text3);margin-top:12px;
-            max-height:80px;overflow-y:auto;font-family:'SF Mono',monospace;word-break:break-all;
-            border:1px solid var(--border);
-        }
+        .ocr-raw{background:var(--surface3);border-radius:8px;padding:10px 14px;font-size:.7rem;color:var(--text3);margin-top:12px;max-height:80px;overflow-y:auto;font-family:'SF Mono',monospace;word-break:break-all;border:1px solid var(--border)}
 
-        /* ─── ALERT ─── */
-        .alert{
-            padding:12px 16px;border-radius:12px;font-size:.78rem;
-            display:flex;align-items:center;gap:10px;margin-bottom:14px;font-weight:500;
-            border:1px solid transparent;
-        }
+        .alert{padding:12px 16px;border-radius:12px;font-size:.78rem;display:flex;align-items:center;gap:10px;margin-bottom:14px;font-weight:500;border:1px solid transparent}
+        .alert svg{width:16px;height:16px;flex-shrink:0}
         .alert.amber{background:var(--gold-bg);color:var(--gold);border-color:rgba(212,168,83,.1)}
         .alert.green{background:var(--emerald-bg);color:var(--emerald);border-color:rgba(52,211,153,.1)}
         .alert.red{background:var(--ruby-bg);color:var(--ruby);border-color:rgba(248,113,113,.1)}
 
-        /* ─── BALANCE ─── */
-        .balance-box{
-            background:linear-gradient(135deg,var(--surface),var(--surface2));
-            border:1px solid var(--border);border-radius:18px;
-            padding:28px 20px;text-align:center;margin-bottom:16px;
-            position:relative;overflow:hidden;
-        }
-        .balance-box::before{
-            content:'';position:absolute;top:0;left:0;right:0;height:1px;
-            background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
-        }
+        .balance-box{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:18px;padding:28px 20px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden}
+        .balance-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent)}
         .balance-box.positive{border-color:rgba(52,211,153,.2);box-shadow:var(--glow-green)}
         .balance-box.negative{border-color:rgba(248,113,113,.2);box-shadow:var(--glow-red)}
         .balance-label{font-size:.75rem;color:var(--text3);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
         .balance-value{font-size:2.4rem;font-weight:900;letter-spacing:-1.5px;line-height:1.1}
         .balance-value.positive{background:linear-gradient(135deg,var(--emerald),var(--emerald2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
         .balance-value.negative{background:linear-gradient(135deg,var(--ruby),var(--ruby2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .balance-badge{
-            display:inline-flex;align-items:center;gap:6px;padding:7px 18px;
-            border-radius:20px;font-size:.75rem;font-weight:700;margin-top:12px;
-            letter-spacing:.3px;
-        }
+        .balance-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 18px;border-radius:20px;font-size:.75rem;font-weight:700;margin-top:12px;letter-spacing:.3px}
+        .balance-badge svg{width:14px;height:14px}
         .balance-badge.pos{background:var(--emerald-bg);color:var(--emerald);border:1px solid rgba(52,211,153,.15)}
         .balance-badge.neg{background:var(--ruby-bg);color:var(--ruby);border:1px solid rgba(248,113,113,.15)}
         .balance-badge.zero{background:var(--surface2);color:var(--text3);border:1px solid var(--border)}
 
-        .bk-card{
-            background:linear-gradient(135deg,var(--surface),var(--surface2));
-            border:1px solid var(--border);border-radius:14px;
-            padding:16px 18px;margin-bottom:10px;
-        }
+        .bk-card{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:10px}
         .bk-card h4{font-size:.8rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+        .bk-card h4 svg{width:15px;height:15px}
         .bk-row{display:flex;justify-content:space-between;padding:6px 0;font-size:.8rem}
-        .bk-row .bl{color:var(--text3)}.bk-row .bv{font-weight:700}
+        .bk-row .bl{color:var(--text3);display:flex;align-items:center;gap:6px}.bk-row .bl svg{width:13px;height:13px;opacity:.5}
+        .bk-row .bv{font-weight:700}
         .bk-row.total{font-weight:800;padding-top:10px;margin-top:6px;border-top:1px solid var(--border)}
 
-        /* ─── EMPTY ─── */
         .empty{text-align:center;padding:32px 16px;color:var(--text3)}
-        .empty .e-icon{font-size:2.5rem;margin-bottom:8px;opacity:.3}
+        .empty .e-icon{display:flex;align-items:center;justify-content:center;margin:0 auto 8px;opacity:.2}
+        .empty .e-icon svg{width:40px;height:40px}
         .empty p{font-size:.82rem;font-weight:500}
 
-        /* ─── MODAL ─── */
-        .modal-bg{
-            display:none;position:fixed;inset:0;
-            background:rgba(0,0,0,.65);backdrop-filter:blur(4px);
-            z-index:100;align-items:flex-end;justify-content:center;
-        }
+        .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:100;align-items:flex-end;justify-content:center}
         .modal-bg.open{display:flex}
-        .modal{
-            background:linear-gradient(180deg,var(--surface),var(--surface2));
-            border-radius:20px 20px 0 0;padding:24px 18px;
-            width:100%;max-width:480px;max-height:85vh;overflow-y:auto;
-            padding-bottom:calc(24px + var(--safe-b));
-            animation:slideUp .25s cubic-bezier(.4,0,.2,1);
-            border:1px solid var(--border);border-bottom:none;
-        }
+        .modal{background:linear-gradient(180deg,var(--surface),var(--surface2));border-radius:20px 20px 0 0;padding:24px 18px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;padding-bottom:calc(24px + var(--safe-b));animation:slideUp .25s cubic-bezier(.4,0,.2,1);border:1px solid var(--border);border-bottom:none}
         @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
         .modal h2{font-size:1.1rem;font-weight:800;margin-bottom:18px;letter-spacing:-.3px}
         .modal .field{margin-bottom:14px}
         .modal .field input,.modal .field select{width:100%}
         .modal-actions{display:flex;gap:10px;margin-top:20px}.modal-actions .btn{flex:1}
 
-        /* ─── TOAST ─── */
         .toast-box{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:12px;right:12px;z-index:200;display:flex;flex-direction:column;gap:8px}
-        .toast{
-            padding:14px 18px;border-radius:14px;font-size:.82rem;font-weight:600;
-            display:flex;align-items:center;gap:10px;
-            animation:tIn .3s cubic-bezier(.4,0,.2,1);
-            box-shadow:0 8px 30px rgba(0,0,0,.4);
-            backdrop-filter:blur(12px);
-        }
+        .toast{padding:14px 18px;border-radius:14px;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:10px;animation:tIn .3s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 30px rgba(0,0,0,.4);backdrop-filter:blur(12px)}
+        .toast svg{width:16px;height:16px;flex-shrink:0}
         .toast.warn{background:rgba(120,53,15,.9);color:#fbbf24;border:1px solid rgba(251,191,36,.15)}
         .toast.error{background:rgba(127,29,29,.9);color:#fca5a5;border:1px solid rgba(252,165,165,.15)}
         .toast.success{background:rgba(20,83,45,.9);color:#86efac;border:1px solid rgba(134,239,172,.15)}
@@ -394,12 +215,17 @@
 
         .scan-pulse{animation:pulse 2s ease-in-out infinite}
         @keyframes pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:.8;transform:scale(1.05)}}
+
+        .icon-inline{display:inline-flex;vertical-align:middle}
+        .icon-inline svg{width:14px;height:14px}
     </style>
 </head>
 <body>
 <div class="app">
     <div class="topbar">
-        <div class="logo-icon">$</div>
+        <div class="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
         <div class="logo">Finanças Casa</div>
     </div>
 
@@ -412,16 +238,22 @@
 
             <div class="camera-box" id="cameraBox">
                 <div class="camera-trigger" id="camTrigger" onclick="openCamera()">
-                    <span class="cam-icon scan-pulse">📸</span>
+                    <div class="cam-icon scan-pulse">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    </div>
                     <p>Tirar foto do preço na gôndola</p>
                     <div class="cam-sub">A câmera vai ler o preço automaticamente</div>
                 </div>
                 <div class="camera-view" id="camView">
-                    <button class="camera-close" onclick="closeCamera()">✕</button>
+                    <button class="camera-close" onclick="closeCamera()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
                     <video id="camVideo" autoplay playsinline></video>
                     <div class="camera-overlay">
                         <div class="hint">Aponte para a etiqueta de preço e toque no botão</div>
-                        <button class="capture-btn" onclick="capturePhoto()">📷</button>
+                        <button class="capture-btn" onclick="capturePhoto()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        </button>
                     </div>
                     <canvas id="camCanvas"></canvas>
                 </div>
@@ -445,33 +277,53 @@
                     </div>
                     <div class="ocr-raw" id="ocrRaw" style="display:none"></div>
                     <div class="btn-row">
-                        <button class="btn btn-ghost btn-sm" onclick="retakePhoto()" style="flex:0">📷 Outra foto</button>
-                        <button class="btn btn-green btn-sm" id="btnUseOcr" onclick="useSelectedOcr()" style="flex:1" disabled>✔ Usar Este</button>
+                        <button class="btn btn-ghost btn-sm" onclick="retakePhoto()" style="flex:0">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            Outra foto
+                        </button>
+                        <button class="btn btn-green btn-sm" id="btnUseOcr" onclick="useSelectedOcr()" style="flex:1" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><polyline points="20 6 9 17 4 12"/></svg>
+                            Usar Este
+                        </button>
                     </div>
                 </div>
             </div>
 
             <div class="sum-card c-blue">
-                <div class="sum-label">Total da Lista</div>
+                <div class="sum-label">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    Total da Lista
+                </div>
                 <div class="sum-val blue" id="listaTotal">R$ 0,00</div>
                 <div class="sum-sub" id="listaCount">0 itens</div>
             </div>
 
             <div class="form-card">
-                <h3>➕ Adicionar Item Manual</h3>
+                <h3>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Adicionar Item Manual
+                </h3>
                 <div class="field"><label>Produto</label><input type="text" id="pNome" placeholder="Arroz, feijão, leite..."></div>
                 <div class="field-row">
                     <div class="field"><label>Qtd</label><input type="number" id="pQtd" min="1" value="1" inputmode="numeric" oninput="calcP()"></div>
                     <div class="field"><label>Valor Unit. (R$)</label><input type="text" id="pValor" placeholder="0,00" inputmode="decimal" oninput="calcP()"></div>
                 </div>
                 <div class="field"><label>Total (calculado)</label><input type="text" id="pTotalCalc" readonly class="calc"></div>
-                <button class="btn btn-green" onclick="addProduto()">+ Adicionar à Lista</button>
+                <button class="btn btn-green" onclick="addProduto()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Adicionar à Lista
+                </button>
             </div>
 
             <div class="card">
-                <div class="card-head"><h3>Itens da Lista</h3></div>
+                <div class="card-head">
+                    <h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        Itens da Lista
+                    </h3>
+                </div>
                 <div id="produtosList"></div>
-                <div class="empty" id="produtosEmpty"><div class="e-icon">🛒</div><p>Adicione itens ou tire foto do preço</p></div>
+                <div class="empty" id="produtosEmpty"><div class="e-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div><p>Adicione itens ou tire foto do preço</p></div>
             </div>
         </div>
 
@@ -479,31 +331,43 @@
         <div class="page" id="pg-fixas">
             <div class="page-title">Despesas Fixas</div>
             <div class="page-sub">Alimentação puxa automático da Lista de Produtos</div>
-            <div class="alert amber"><span>ℹ️</span> <strong>"Alimentação"</strong> = total da Lista de Produtos.</div>
-            <div class="sum-row">
-                <div class="sum-card c-red"><div class="sum-label">Fixas</div><div class="sum-val red" id="fixasTotal">R$ 0,00</div></div>
-                <div class="sum-card c-amber"><div class="sum-label">🛒 Alimentação</div><div class="sum-val amber" id="alimTotal">R$ 0,00</div></div>
+            <div class="alert amber">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <span><strong>"Alimentação"</strong> = total da Lista de Produtos.</span>
             </div>
-            <button class="add-btn" onclick="openFixaModal()">+ Nova Despesa Fixa</button>
-            <div class="card"><div class="card-head"><h3>Despesas</h3></div><div id="fixasList"></div><div class="empty" id="fixasEmpty"><div class="e-icon">🏠</div><p>Nenhuma despesa fixa</p></div></div>
+            <div class="sum-row">
+                <div class="sum-card c-red"><div class="sum-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Fixas</div><div class="sum-val red" id="fixasTotal">R$ 0,00</div></div>
+                <div class="sum-card c-amber"><div class="sum-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Alimentação</div><div class="sum-val amber" id="alimTotal">R$ 0,00</div></div>
+            </div>
+            <button class="add-btn" onclick="openFixaModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nova Despesa Fixa
+            </button>
+            <div class="card"><div class="card-head"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Despesas</h3></div><div id="fixasList"></div><div class="empty" id="fixasEmpty"><div class="e-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><p>Nenhuma despesa fixa</p></div></div>
         </div>
 
         <!-- ════════ M3: RECEITAS ════════ -->
         <div class="page" id="pg-receitas">
             <div class="page-title">Receitas</div>
             <div class="page-sub">Salário, freelance, rendimentos</div>
-            <div class="sum-card c-green"><div class="sum-label">Total Receitas</div><div class="sum-val green" id="recTotal">R$ 0,00</div><div class="sum-sub" id="recCount">0 receitas</div></div>
-            <button class="add-btn" onclick="openRecModal()">+ Nova Receita</button>
-            <div class="card"><div class="card-head"><h3>Receitas</h3></div><div id="recList"></div><div class="empty" id="recEmpty"><div class="e-icon">📥</div><p>Nenhuma receita</p></div></div>
+            <div class="sum-card c-green"><div class="sum-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> Total Receitas</div><div class="sum-val green" id="recTotal">R$ 0,00</div><div class="sum-sub" id="recCount">0 receitas</div></div>
+            <button class="add-btn" onclick="openRecModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nova Receita
+            </button>
+            <div class="card"><div class="card-head"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> Receitas</h3></div><div id="recList"></div><div class="empty" id="recEmpty"><div class="e-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><p>Nenhuma receita</p></div></div>
         </div>
 
         <!-- ════════ M4: OUTROS ════════ -->
         <div class="page" id="pg-outros">
             <div class="page-title">Outros Gastos</div>
             <div class="page-sub">Despesas avulsas e esporádicas</div>
-            <div class="sum-card c-purple"><div class="sum-label">Total Outros</div><div class="sum-val amber" id="outTotal">R$ 0,00</div><div class="sum-sub" id="outCount">0 gastos</div></div>
-            <button class="add-btn" onclick="openOutModal()">+ Novo Gasto Avulso</button>
-            <div class="card"><div class="card-head"><h3>Gastos</h3></div><div id="outList"></div><div class="empty" id="outEmpty"><div class="e-icon">📋</div><p>Nenhum gasto avulso</p></div></div>
+            <div class="sum-card c-purple"><div class="sum-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Total Outros</div><div class="sum-val amber" id="outTotal">R$ 0,00</div><div class="sum-sub" id="outCount">0 gastos</div></div>
+            <button class="add-btn" onclick="openOutModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Novo Gasto Avulso
+            </button>
+            <div class="card"><div class="card-head"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Gastos</h3></div><div id="outList"></div><div class="empty" id="outEmpty"><div class="e-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div><p>Nenhum gasto avulso</p></div></div>
         </div>
 
         <!-- ════════ M5: SALDO ════════ -->
@@ -517,15 +381,15 @@
             </div>
             <div class="breakdown">
                 <div class="bk-card" style="border-left:3px solid var(--emerald)">
-                    <h4 style="color:var(--emerald)">📥 Entradas</h4>
+                    <h4 style="color:var(--emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> Entradas</h4>
                     <div class="bk-row"><span class="bl">Receitas</span><span class="bv" id="bkRec" style="color:var(--emerald)">R$ 0,00</span></div>
                     <div class="bk-row total"><span class="bl">Total Entradas</span><span class="bv" id="bkRecT" style="color:var(--emerald)">R$ 0,00</span></div>
                 </div>
                 <div class="bk-card" style="border-left:3px solid var(--ruby)">
-                    <h4 style="color:var(--ruby)">📤 Saídas</h4>
-                    <div class="bk-row"><span class="bl">🏠 Despesas Fixas</span><span class="bv" id="bkFix">R$ 0,00</span></div>
-                    <div class="bk-row"><span class="bl">🛒 Alimentação</span><span class="bv" id="bkAli" style="color:var(--gold)">R$ 0,00</span></div>
-                    <div class="bk-row"><span class="bl">📋 Outros Gastos</span><span class="bv" id="bkOut">R$ 0,00</span></div>
+                    <h4 style="color:var(--ruby)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg> Saídas</h4>
+                    <div class="bk-row"><span class="bl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Despesas Fixas</span><span class="bv" id="bkFix">R$ 0,00</span></div>
+                    <div class="bk-row"><span class="bl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Alimentação</span><span class="bv" id="bkAli" style="color:var(--gold)">R$ 0,00</span></div>
+                    <div class="bk-row"><span class="bl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Outros Gastos</span><span class="bv" id="bkOut">R$ 0,00</span></div>
                     <div class="bk-row total"><span class="bl">Total Saídas</span><span class="bv" id="bkSaiT" style="color:var(--ruby)">R$ 0,00</span></div>
                 </div>
             </div>
@@ -533,11 +397,11 @@
     </div>
 
     <nav class="bottom-nav">
-        <div class="bn-item active" data-pg="produtos"><span class="bn-icon">🛒</span>Produtos</div>
-        <div class="bn-item" data-pg="fixas"><span class="bn-icon">🏠</span>Fixas</div>
-        <div class="bn-item" data-pg="receitas"><span class="bn-icon">📥</span>Receitas</div>
-        <div class="bn-item" data-pg="outros"><span class="bn-icon">📋</span>Outros</div>
-        <div class="bn-item" data-pg="saldo"><span class="bn-icon">⚖️</span>Saldo</div>
+        <div class="bn-item active" data-pg="produtos"><span class="bn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></span>Produtos</div>
+        <div class="bn-item" data-pg="fixas"><span class="bn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Fixas</div>
+        <div class="bn-item" data-pg="receitas"><span class="bn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>Receitas</div>
+        <div class="bn-item" data-pg="outros"><span class="bn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>Outros</div>
+        <div class="bn-item" data-pg="saldo"><span class="bn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M2 7l4-4 4 4"/><path d="M14 7l4-4 4 4"/><rect x="2" y="7" width="8" height="7" rx="1"/><rect x="14" y="7" width="8" height="7" rx="1"/></svg></span>Saldo</div>
     </nav>
 </div>
 
@@ -586,7 +450,17 @@ function pBRL(s){if(typeof s==='number')return s;if(!s)return 0;s=s.replace(/[R$
 function fBRL(v){return'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function fDate(d){if(!d)return'—';return new Date(d+'T12:00:00').toLocaleDateString('pt-BR')}
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
-function toast(m,t='warn'){const e=document.createElement('div');e.className='toast '+t;e.textContent=m;document.getElementById('toastBox').appendChild(e);setTimeout(()=>e.remove(),3000)}
+
+const IC={
+    trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+    edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    checkBadge:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    tag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>'
+};
+
+function toast(m,t='warn'){const e=document.createElement('div');e.className='toast '+t;e.innerHTML=m;document.getElementById('toastBox').appendChild(e);setTimeout(()=>e.remove(),3500)}
 function openModal(id){document.getElementById(id).classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 function today(){return new Date().toISOString().split('T')[0]}
@@ -602,73 +476,40 @@ document.querySelectorAll('.bn-item').forEach(n=>{
     });
 });
 
-/* ══ CAMERA + OCR ══ */
 let camStream=null,ocrSelectedIdx=-1,ocrItems=[];
-async function openCamera(){
-    try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}});const v=document.getElementById('camVideo');v.srcObject=camStream;document.getElementById('camTrigger').style.display='none';document.getElementById('camView').style.display='block';document.getElementById('ocrResults').classList.remove('show')}catch(e){toast('Câmera indisponível: '+e.message,'error')}
-}
+async function openCamera(){try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}});const v=document.getElementById('camVideo');v.srcObject=camStream;document.getElementById('camTrigger').style.display='none';document.getElementById('camView').style.display='block';document.getElementById('ocrResults').classList.remove('show')}catch(e){toast('Câmera indisponível: '+e.message,'error')}}
 function closeCamera(){if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}document.getElementById('camView').style.display='none';document.getElementById('camTrigger').style.display='block';document.getElementById('camLoading').classList.remove('active')}
 function retakePhoto(){document.getElementById('ocrResults').classList.remove('show');document.getElementById('ocrEditZone').classList.remove('show');openCamera()}
-async function capturePhoto(){
-    if(!camStream)return;const v=document.getElementById('camVideo'),c=document.getElementById('camCanvas');
-    c.width=v.videoWidth;c.height=v.videoHeight;const ctx=c.getContext('2d');ctx.drawImage(v,0,0);
-    camStream.getTracks().forEach(t=>t.stop());camStream=null;document.getElementById('camView').style.display='none';
-    document.getElementById('camLoading').classList.add('active');document.getElementById('ocrPct').textContent='0%';
-    const ctx2=c.getContext('2d');const img=ctx2.getImageData(0,0,c.width,c.height);const d=img.data;
-    for(let i=0;i<d.length;i+=4){const g=d[i]*.299+d[i+1]*.587+d[i+2]*.114;const ct=((g-128)*1.6)+128;const v2=Math.max(0,Math.min(255,ct));d[i]=v2;d[i+1]=v2;d[i+2]=v2}ctx2.putImageData(img,0,0);
-    const imageData=c.toDataURL('image/png');
-    try{const result=await Tesseract.recognize(imageData,'por',{logger:m=>{if(m.status==='recognizing text'){document.getElementById('ocrPct').textContent=Math.round(m.progress*100)+'%'}}});document.getElementById('camLoading').classList.remove('active');processOcrResult(result.data.text,imageData)}catch(e){document.getElementById('camLoading').classList.remove('active');toast('Erro ao processar imagem','error');document.getElementById('camTrigger').style.display='block'}
-}
-function processOcrResult(text,imgData){
-    const raw=document.getElementById('ocrRaw');raw.textContent=text||'(nenhum texto reconhecido)';raw.style.display='block';
-    ocrItems=[];ocrSelectedIdx=-1;
-    if(!text||!text.trim()){document.getElementById('ocrItems').innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:.82rem">Nenhum texto reconhecido. Tente mais perto da etiqueta.</div>';document.getElementById('ocrResults').classList.add('show');document.getElementById('btnUseOcr').disabled=true;return}
-    const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
-    const noise=/^(OFERTA|promo[cç][aã]o|desconto|veja mais|confira|pre[cç]o|unidade|kg|lt|ml|un\b|cx\b|pct\b|dv\b|cod\.?|ean|c.digo| barras|\d{8,14}|\d{3,5}[.\-]\d{1,5}[.\-]\d{0,5})$/i;
-    function extractPrices(line){const r=[];const rx=/(\d{1,3}(?:\.\d{3})*[.,]\d{2})/g;let m;while((m=rx.exec(line))!==null){const val=parseFloat(m[1].replace(/\./g,'').replace(',','.'));if(val>0&&val<50000){r.push({price:val,before:line.substring(0,m.index).trim(),after:line.substring(m.index+m[0].length).trim(),raw:m[1]})}}return r}
-    function cleanName(s){if(!s)return'';s=s.replace(/R\$\s*/gi,'');s=s.replace(/\d{1,3}(?:\.\d{3})*[.,]\d{2}/g,'');s=s.replace(/\bx\s*\d+/gi,'');s=s.replace(/por\s*(?:unidade|kg|litro)?/gi,'');s=s.replace(/pre[cç]o\s*(?:de\s*)?/gi,'');s=s.replace(/\s+/g,' ').trim();return s}
-    function findNameForPrice(lineIdx,priceLine){const c=[];const fromSame=cleanName(priceLine);if(fromSame.length>1)c.push(fromSame);for(let i=1;i<=3;i++){const idx=lineIdx-i;if(idx<0)break;const prev=lines[idx];if(noise.test(prev))continue;const cl=cleanName(prev);if(cl.length<2||/^\d+[.,x]?\d*$/.test(cl))continue;c.push(cl);break}if(lineIdx+1<lines.length){const next=lines[lineIdx+1];if(!noise.test(next)){const um=next.match(/(por\s*(?:un\b|kg\b|lt\b|ml\b|100g|1kg)|unidade|kg|litro|ml)/i);if(um)c.push(cleanName(next))}}c.sort((a,b)=>b.length-a.length);return c[0]||'Item encontrado'}
-    lines.forEach((line,lineIdx)=>{if(noise.test(line))return;extractPrices(line).forEach(p=>{let name=cleanName(p.before+' '+p.after);if(name.length<2)name=findNameForPrice(lineIdx,line);name=name.replace(/^[-–—•·|/\\:;,.\s]+/,'').replace(/[-–—•·|/\\:;,.\s]+$/,'').trim();if(name.length<2)name='Item encontrado';ocrItems.push({price:p.price,priceStr:p.price.replace('.',','),name,line})})});
-    const seen=new Set();ocrItems=ocrItems.filter(i=>{const k=i.price.toFixed(2)+'|'+i.name.toLowerCase();if(seen.has(k))return false;seen.add(k);return true});
-    ocrItems.sort((a,b)=>{const aR=a.line.includes('R$')?0:1,bR=b.line.includes('R$')?0:1;if(aR!==bR)return aR-bR;return(b.name!=='Item encontrado'?b.name.length:0)-(a.name!=='Item gefunden'?a.name.length:0)});
-    const el=document.getElementById('ocrItems');
-    if(!ocrItems.length){el.innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:.82rem">Preços não identificados. Tente mais perto da etiqueta.</div>';document.getElementById('btnUseOcr').disabled=true}
-    else{el.innerHTML=ocrItems.map((item,idx)=>`<div class="ocr-item" onclick="selectOcrItem(${idx})" id="ocrItem${idx}"><div class="ocr-name">${esc(item.name)}</div><div class="ocr-price">${fBRL(item.price)}</div><div class="ocr-check" id="ocrCheck${idx}"></div></div>`).join('');document.getElementById('btnUseOcr').disabled=true}
-    document.getElementById('ocrResults').classList.add('show');
-}
+async function capturePhoto(){if(!camStream)return;const v=document.getElementById('camVideo'),c=document.getElementById('camCanvas');c.width=v.videoWidth;c.height=v.videoHeight;const ctx=c.getContext('2d');ctx.drawImage(v,0,0);camStream.getTracks().forEach(t=>t.stop());camStream=null;document.getElementById('camView').style.display='none';document.getElementById('camLoading').classList.add('active');document.getElementById('ocrPct').textContent='0%';const ctx2=c.getContext('2d');const img=ctx2.getImageData(0,0,c.width,c.height);const d=img.data;for(let i=0;i<d.length;i+=4){const g=d[i]*.299+d[i+1]*.587+d[i+2]*.114;const ct=((g-128)*1.6)+128;const v2=Math.max(0,Math.min(255,ct));d[i]=v2;d[i+1]=v2;d[i+2]=v2}ctx2.putImageData(img,0,0);const imageData=c.toDataURL('image/png');try{const result=await Tesseract.recognize(imageData,'por',{logger:m=>{if(m.status==='recognizing text'){document.getElementById('ocrPct').textContent=Math.round(m.progress*100)+'%'}}});document.getElementById('camLoading').classList.remove('active');processOcrResult(result.data.text,imageData)}catch(e){document.getElementById('camLoading').classList.remove('active');toast('Erro ao processar imagem','error');document.getElementById('camTrigger').style.display='block'}}
+function processOcrResult(text,imgData){const raw=document.getElementById('ocrRaw');raw.textContent=text||'(nenhum texto reconhecido)';raw.style.display='block';ocrItems=[];ocrSelectedIdx=-1;if(!text||!text.trim()){document.getElementById('ocrItems').innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:.82rem">Nenhum texto reconhecido. Tente mais perto da etiqueta.</div>';document.getElementById('ocrResults').classList.add('show');document.getElementById('btnUseOcr').disabled=true;return}const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);const noise=/^(OFERTA|promo[cç][aã]o|desconto|veja mais|confira|pre[cç]o|unidade|kg|lt|ml|un\b|cx\b|pct\b|dv\b|cod\.?|ean|c.digo| barras|\d{8,14}|\d{3,5}[.\-]\d{1,5}[.\-]\d{0,5})$/i;function extractPrices(line){const r=[];const rx=/(\d{1,3}(?:\.\d{3})*[.,]\d{2})/g;let m;while((m=rx.exec(line))!==null){const val=parseFloat(m[1].replace(/\./g,'').replace(',','.'));if(val>0&&val<50000){r.push({price:val,before:line.substring(0,m.index).trim(),after:line.substring(m.index+m[0].length).trim(),raw:m[1]})}}return r}function cleanName(s){if(!s)return'';s=s.replace(/R\$\s*/gi,'');s=s.replace(/\d{1,3}(?:\.\d{3})*[.,]\d{2}/g,'');s=s.replace(/\bx\s*\d+/gi,'');s=s.replace(/por\s*(?:unidade|kg|litro)?/gi,'');s=s.replace(/pre[cç]o\s*(?:de\s*)?/gi,'');s=s.replace(/\s+/g,' ').trim();return s}function findNameForPrice(lineIdx,priceLine){const c=[];const fromSame=cleanName(priceLine);if(fromSame.length>1)c.push(fromSame);for(let i=1;i<=3;i++){const idx=lineIdx-i;if(idx<0)break;const prev=lines[idx];if(noise.test(prev))continue;const cl=cleanName(prev);if(cl.length<2||/^\d+[.,x]?\d*$/.test(cl))continue;c.push(cl);break}if(lineIdx+1<lines.length){const next=lines[lineIdx+1];if(!noise.test(next)){const um=next.match(/(por\s*(?:un\b|kg\b|lt\b|ml\b|100g|1kg)|unidade|kg|litro|ml)/i);if(um)c.push(cleanName(next))}}c.sort((a,b)=>b.length-a.length);return c[0]||'Item encontrado'}lines.forEach((line,lineIdx)=>{if(noise.test(line))return;extractPrices(line).forEach(p=>{let name=cleanName(p.before+' '+p.after);if(name.length<2)name=findNameForPrice(lineIdx,line);name=name.replace(/^[-\u2013\u2014\u2022\u00b7|/\\:;,.\s]+/,'').replace(/[-\u2013\u2014\u2022\u00b7|/\\:;,.\s]+$/,'').trim();if(name.length<2)name='Item encontrado';ocrItems.push({price:p.price,priceStr:p.price.replace('.',','),name,line})})});const seen=new Set();ocrItems=ocrItems.filter(i=>{const k=i.price.toFixed(2)+'|'+i.name.toLowerCase();if(seen.has(k))return false;seen.add(k);return true});ocrItems.sort((a,b)=>{const aR=a.line.includes('R$')?0:1,bR=b.line.includes('R$')?0:1;if(aR!==bR)return aR-bR;return(b.name!=='Item encontrado'?b.name.length:0)-(a.name!=='Item encontrado'?a.name.length:0)});const el=document.getElementById('ocrItems');if(!ocrItems.length){el.innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:.82rem">Preços não identificados. Tente mais perto da etiqueta.</div>';document.getElementById('btnUseOcr').disabled=true}else{el.innerHTML=ocrItems.map((item,idx)=>`<div class="ocr-item" onclick="selectOcrItem(${idx})" id="ocrItem${idx}"><div class="ocr-name">${esc(item.name)}</div><div class="ocr-price">${fBRL(item.price)}</div><div class="ocr-check" id="ocrCheck${idx}">${IC.check}</div></div>`).join('');document.getElementById('btnUseOcr').disabled=true}document.getElementById('ocrResults').classList.add('show')}
 function selectOcrItem(idx){document.querySelectorAll('.ocr-item').forEach(e=>e.classList.remove('selected'));ocrSelectedIdx=idx;document.getElementById('ocrItem'+idx).classList.add('selected');const item=ocrItems[idx];document.getElementById('ocrEditName').value=item.name||'';document.getElementById('ocrEditPrice').value=fBRL(item.price);document.getElementById('ocrEditZone').classList.add('show');document.getElementById('ocrEditName').focus();document.getElementById('ocrEditName').select();document.getElementById('btnUseOcr').disabled=false}
-function useSelectedOcr(){if(ocrSelectedIdx<0||!ocrItems[ocrSelectedIdx])return;const name=document.getElementById('ocrEditName').value.trim()||'Item encontrado',priceStr=document.getElementById('ocrEditPrice').value,price=pBRL(priceStr);document.getElementById('pNome').value=name;document.getElementById('pValor').value=price.toFixed(2).replace('.',',');document.getElementById('pQtd').value='1';calcP();document.getElementById('pQtd').focus();document.getElementById('ocrResults').classList.remove('show');document.getElementById('ocrEditZone').classList.remove('show');document.getElementById('camTrigger').style.display='block';toast('✅ '+name+' — '+fBRL(price)+' — confirme a quantidade e salve!','success')}
+function useSelectedOcr(){if(ocrSelectedIdx<0||!ocrItems[ocrSelectedIdx])return;const name=document.getElementById('ocrEditName').value.trim()||'Item encontrado',priceStr=document.getElementById('ocrEditPrice').value,price=pBRL(priceStr);document.getElementById('pNome').value=name;document.getElementById('pValor').value=price.toFixed(2).replace('.',',');document.getElementById('pQtd').value='1';calcP();document.getElementById('pQtd').focus();document.getElementById('ocrResults').classList.remove('show');document.getElementById('ocrEditZone').classList.remove('show');document.getElementById('camTrigger').style.display='block';toast(IC.checkBadge+' '+esc(name)+' — '+fBRL(price)+' — confirme e salve!','success')}
 
-/* ══ M1: PRODUTOS ══ */
 function calcP(){const q=parseInt(document.getElementById('pQtd').value)||0,v=pBRL(document.getElementById('pValor').value);document.getElementById('pTotalCalc').value=fBRL(q*v)}
-function addProduto(){const nome=document.getElementById('pNome').value.trim(),qtd=parseInt(document.getElementById('pQtd').value)||0,val=pBRL(document.getElementById('pValor').value),total=qtd*val;if(!nome){toast('Informe o nome do produto','error');return}if(qtd<=0){toast('Quantidade deve ser > 0','error');return}if(val<=0){toast('Informe o valor unitário','error');return}produtos.push({id:nid(),nome,qtd,vu:val,total});save();document.getElementById('pNome').value='';document.getElementById('pQtd').value='1';document.getElementById('pValor').value='';document.getElementById('pTotalCalc').value='';renderProdutos();toast('Item adicionado!','success')}
+function addProduto(){const nome=document.getElementById('pNome').value.trim(),qtd=parseInt(document.getElementById('pQtd').value)||0,val=pBRL(document.getElementById('pValor').value),total=qtd*val;if(!nome){toast('Informe o nome do produto','error');return}if(qtd<=0){toast('Quantidade deve ser > 0','error');return}if(val<=0){toast('Informe o valor unitário','error');return}produtos.push({id:nid(),nome,qtd,vu:val,total});save();document.getElementById('pNome').value='';document.getElementById('pQtd').value='1';document.getElementById('pValor').value='';document.getElementById('pTotalCalc').value='';renderProdutos();toast(IC.checkBadge+' Item adicionado!','success')}
 function delProduto(id){if(!confirm('Remover este item?'))return;produtos=produtos.filter(p=>p.id!==id);save();renderProdutos()}
-function renderProdutos(){const total=produtos.reduce((s,p)=>s+p.total,0);document.getElementById('listaTotal').textContent=fBRL(total);document.getElementById('listaCount').textContent=produtos.length+' itens';const el=document.getElementById('produtosList'),empty=document.getElementById('produtosEmpty');if(!produtos.length){el.innerHTML='';empty.style.display='block';return}empty.style.display='none';el.innerHTML=produtos.map(p=>`<div class="item"><div class="item-info"><div class="item-name">${esc(p.nome)}</div><div class="item-meta"><span class="tag tag-blue">${p.qtd}x ${fBRL(p.vu)}</span></div></div><div class="item-val amber">${fBRL(p.total)}</div><div class="item-actions"><button class="btn-del" onclick="delProduto('${p.id}')">🗑️</button></div></div>`).join('')}
+function renderProdutos(){const total=produtos.reduce((s,p)=>s+p.total,0);document.getElementById('listaTotal').textContent=fBRL(total);document.getElementById('listaCount').textContent=produtos.length+' itens';const el=document.getElementById('produtosList'),empty=document.getElementById('produtosEmpty');if(!produtos.length){el.innerHTML='';empty.style.display='block';return}empty.style.display='none';el.innerHTML=produtos.map(p=>`<div class="item"><div class="item-info"><div class="item-name">${esc(p.nome)}</div><div class="item-meta"><span class="tag tag-blue">${IC.tag} ${p.qtd}x ${fBRL(p.vu)}</span></div></div><div class="item-val amber">${fBRL(p.total)}</div><div class="item-actions"><button class="btn-del" onclick="delProduto('${p.id}')">${IC.trash}</button></div></div>`).join('')}
 
-/* ══ M2: FIXAS ══ */
 function aliTotal(){return produtos.reduce((s,p)=>s+p.total,0)}
 function openFixaModal(){document.getElementById('efId').value='';document.getElementById('efNome').value='';document.getElementById('efParc').value='12';document.getElementById('efValor').value='';document.getElementById('efObs').value='';document.getElementById('mFixaTitle').textContent='Nova Despesa Fixa';openModal('mFixa')}
 function openFixaEdit(id){const f=fixas.find(x=>x.id===id);if(!f)return;document.getElementById('efId').value=id;document.getElementById('efNome').value=f.nome;document.getElementById('efParc').value=f.parcelas;document.getElementById('efValor').value=f.valor.toFixed(2).replace('.',',');document.getElementById('efObs').value=f.obs||'';document.getElementById('mFixaTitle').textContent='Editar Despesa';openModal('mFixa')}
 function saveFixa(){const id=document.getElementById('efId').value,nome=document.getElementById('efNome').value.trim(),parc=parseInt(document.getElementById('efParc').value)||0,val=pBRL(document.getElementById('efValor').value),obs=document.getElementById('efObs').value.trim();if(!nome){toast('Informe o nome','error');return}if(parc<=0){toast('Parcelas > 0','error');return}if(val<=0){toast('Informe o valor','error');return}if(id){const f=fixas.find(x=>x.id===id);if(f){f.nome=nome;f.parcelas=parc;f.valor=val;f.obs=obs}}else fixas.push({id:nid(),nome,parcelas:parc,valor:val,obs});save();closeModal('mFixa');renderFixas()}
 function delFixa(id){if(!confirm('Remover?'))return;fixas=fixas.filter(f=>f.id!==id);save();renderFixas()}
-function renderFixas(){const total=fixas.reduce((s,f)=>s+f.valor,0),ali=aliTotal();document.getElementById('fixasTotal').textContent=fBRL(total);document.getElementById('alimTotal').textContent=fBRL(ali);const el=document.getElementById('fixasList'),empty=document.getElementById('fixasEmpty');if(!fixas.length){el.innerHTML='';empty.style.display='block';return}empty.style.display='none';el.innerHTML=fixas.map(f=>`<div class="item"><div class="item-info"><div class="item-name">${esc(f.nome)}</div><div class="item-meta"><span class="tag tag-red">${f.parcelas}x restantes</span>${f.obs?'<span style="color:var(--text3);font-size:.7rem">'+esc(f.obs)+'</span>':''}</div></div><div class="item-val red">${fBRL(f.valor)}</div><div class="item-actions"><button onclick="openFixaEdit('${f.id}')">✏️</button><button class="btn-del" onclick="delFixa('${f.id}')">🗑️</button></div></div>`).join('')}
+function renderFixas(){const total=fixas.reduce((s,f)=>s+f.valor,0),ali=aliTotal();document.getElementById('fixasTotal').textContent=fBRL(total);document.getElementById('alimTotal').textContent=fBRL(ali);const el=document.getElementById('fixasList'),empty=document.getElementById('fixasEmpty');if(!fixas.length){el.innerHTML='';empty.style.display='block';return}empty.style.display='none';el.innerHTML=fixas.map(f=>`<div class="item"><div class="item-info"><div class="item-name">${esc(f.nome)}</div><div class="item-meta"><span class="tag tag-red">${IC.tag} ${f.parcelas}x restantes</span>${f.obs?'<span style="color:var(--text3);font-size:.7rem">'+esc(f.obs)+'</span>':''}</div></div><div class="item-val red">${fBRL(f.valor)}</div><div class="item-actions"><button onclick="openFixaEdit('${f.id}')">${IC.edit}</button><button class="btn-del" onclick="delFixa('${f.id}')">${IC.trash}</button></div></div>`).join('')}
 
-/* ══ M3: RECEITAS ══ */
 function openRecModal(){document.getElementById('erId').value='';document.getElementById('erData').value=today();document.getElementById('erDesc').value='';document.getElementById('erValor').value='';document.getElementById('mRecTitle').textContent='Nova Receita';openModal('mRec')}
 function openRecEdit(id){const r=receitas.find(x=>x.id===id);if(!r)return;document.getElementById('erId').value=id;document.getElementById('erData').value=r.data;document.getElementById('erDesc').value=r.desc;document.getElementById('erValor').value=r.valor.toFixed(2).replace('.',',');document.getElementById('mRecTitle').textContent='Editar Receita';openModal('mRec')}
 function saveRec(){const id=document.getElementById('erId').value,data=document.getElementById('erData').value,desc=document.getElementById('erDesc').value.trim(),val=pBRL(document.getElementById('erValor').value);if(!data){toast('Informe a data','error');return}if(!desc){toast('Informe a descrição','error');return}if(val<=0){toast('Informe o valor','error');return}if(id){const r=receitas.find(x=>x.id===id);if(r){r.data=data;r.desc=desc;r.valor=val}}else receitas.push({id:nid(),data,desc,valor:val});save();closeModal('mRec');renderReceitas()}
 function delRec(id){if(!confirm('Remover?'))return;receitas=receitas.filter(r=>r.id!==id);save();renderReceitas()}
-function renderReceitas(){const total=receitas.reduce((s,r)=>s+r.valor,0);document.getElementById('recTotal').textContent=fBRL(total);document.getElementById('recCount').textContent=receitas.length+' receitas';const el=document.getElementById('recList'),empty=document.getElementById('recEmpty');const sorted=[...receitas].sort((a,b)=>b.data.localeCompare(a.data));if(!sorted.length){el.innerHTML='';empty.style.display='block';return}empty.style.display='none';el.innerHTML=sorted.map(r=>`<div class="item"><div class="item-info"><div class="item-name">${esc(r.desc)}</div><div class="item-meta"><span class="tag tag-green">${fDate(r.data)}</span></div></div><div class="item-val green">+ ${fBRL(r.valor)}</div><div class="item-actions"><button onclick="openRecEdit('${r.id}')">✏️</button><button class="btn-del" onclick="delRec('${r.id}')">🗑️</button></div></div>`).join('')}
+function renderReceitas(){const total=receitas.reduce((s,r)=>s+r.valor,0);document.getElementById('recTotal').textContent=fBRL(total);document.getElementById('recCount').textContent=receitas.length+' receitas';const el=document.getElementById('recList'),empty=document.getElementById('recEmpty');const sorted=[...receitas].sort((a,b)=>b.data.localeCompare(a.data));if(!sorted.length){el.innerHTML='';empty.style.display='block';return}empty.style.display='none';el.innerHTML=sorted.map(r=>`<div class="item"><div class="item-info"><div class="item-name">${esc(r.desc)}</div><div class="item-meta"><span class="tag tag-green">${IC.tag} ${fDate(r.data)}</span></div></div><div class="item-val green">+ ${fBRL(r.valor)}</div><div class="item-actions"><button onclick="openRecEdit('${r.id}')">${IC.edit}</button><button class="btn-del" onclick="delRec('${r.id}')">${IC.trash}</button></div></div>`).join('')}
 
-/* ══ M4: OUTROS ══ */
 function openOutModal(){document.getElementById('eoId').value='';document.getElementById('eoData').value=today();document.getElementById('eoDesc').value='';document.getElementById('eoValor').value='';document.getElementById('mOutTitle').textContent='Novo Gasto Avulso';openModal('mOut')}
 function openOutEdit(id){const o=outros.find(x=>x.id===id);if(!o)return;document.getElementById('eoId').value=id;document.getElementById('eoData').value=o.data;document.getElementById('eoDesc').value=o.desc;document.getElementById('eoValor').value=o.valor.toFixed(2).replace('.',',');document.getElementById('mOutTitle').textContent='Editar Gasto';openModal('mOut')}
 function saveOut(){const id=document.getElementById('eoId').value,data=document.getElementById('eoData').value,desc=document.getElementById('eoDesc').value.trim(),val=pBRL(document.getElementById('eoValor').value);if(!data){toast('Informe a data','error');return}if(!desc){toast('Informe a descrição','error');return}if(val<=0){toast('Informe o valor','error');return}if(id){const o=outros.find(x=>x.id===id);if(o){o.data=data;o.desc=desc;o.valor=val}}else outros.push({id:nid(),data,desc,valor:val});save();closeModal('mOut');renderOutros()}
 function delOut(id){if(!confirm('Remover?'))return;outros=outros.filter(o=>o.id!==id);save();renderOutros()}
-function renderOutros(){const total=outros.reduce((s,o)=>s+o.valor,0);document.getElementById('outTotal').textContent=fBRL(total);document.getElementById('outCount').textContent=outros.length+' gastos';const el=document.getElementById('outList'),empty=document.getElementById('outEmpty');const sorted=[...outros].sort((a,b)=>b.data.localeCompare(a.data));if(!sorted.length){el.innerHTML='';empty.style.display='block';return}empty.style.display='none';el.innerHTML=sorted.map(o=>`<div class="item"><div class="item-info"><div class="item-name">${esc(o.desc)}</div><div class="item-meta"><span class="tag tag-amber">${fDate(o.data)}</span></div></div><div class="item-val red">− ${fBRL(o.valor)}</div><div class="item-actions"><button onclick="openOutEdit('${o.id}')">✏️</button><button class="btn-del" onclick="delOut('${o.id}')">🗑️</button></div></div>`).join('')}
+function renderOutros(){const total=outros.reduce((s,o)=>s+o.valor,0);document.getElementById('outTotal').textContent=fBRL(total);document.getElementById('outCount').textContent=outros.length+' gastos';const el=document.getElementById('outList'),empty=document.getElementById('outEmpty');const sorted=[...outros].sort((a,b)=>b.data.localeCompare(a.data));if(!sorted.length){el.innerHTML='';empty.style.display='block';return}empty.style.display='none';el.innerHTML=sorted.map(o=>`<div class="item"><div class="item-info"><div class="item-name">${esc(o.desc)}</div><div class="item-meta"><span class="tag tag-amber">${IC.tag} ${fDate(o.data)}</span></div></div><div class="item-val red">− ${fBRL(o.valor)}</div><div class="item-actions"><button onclick="openOutEdit('${o.id}')">${IC.edit}</button><button class="btn-del" onclick="delOut('${o.id}')">${IC.trash}</button></div></div>`).join('')}
 
-/* ══ M5: SALDO ══ */
-function renderSaldo(){const rT=receitas.reduce((s,r)=>s+r.valor,0),fT=fixas.reduce((s,f)=>s+f.valor,0),aT=aliTotal(),oT=outros.reduce((s,o)=>s+o.valor,0),saidas=fT+aT+oT,saldo=rT-saidas;const box=document.getElementById('balBox'),val=document.getElementById('saldoVal'),badge=document.getElementById('saldoBadge');if(saldo>0){box.className='balance-box positive';val.className='balance-value positive';val.textContent='+ '+fBRL(saldo);badge.className='balance-badge pos';badge.textContent='✅ Sobrou '+fBRL(saldo)}else if(saldo<0){box.className='balance-box negative';val.className='balance-value negative';val.textContent='− '+fBRL(Math.abs(saldo));badge.className='balance-badge neg';badge.textContent='⚠️ Faltou '+fBRL(Math.abs(saldo))}else{box.className='balance-box';val.className='balance-value';val.textContent=fBRL(0);badge.className='balance-badge zero';badge.textContent='— Saldo zerado'}document.getElementById('bkRec').textContent=fBRL(rT);document.getElementById('bkRecT').textContent=fBRL(rT);document.getElementById('bkFix').textContent=fBRL(fT);document.getElementById('bkAli').textContent=fBRL(aT);document.getElementById('bkOut').textContent=fBRL(oT);document.getElementById('bkSaiT').textContent=fBRL(saidas)}
+function renderSaldo(){const rT=receitas.reduce((s,r)=>s+r.valor,0),fT=fixas.reduce((s,f)=>s+f.valor,0),aT=aliTotal(),oT=outros.reduce((s,o)=>s+o.valor,0),saidas=fT+aT+oT,saldo=rT-saidas;const box=document.getElementById('balBox'),val=document.getElementById('saldoVal'),badge=document.getElementById('saldoBadge');if(saldo>0){box.className='balance-box positive';val.className='balance-value positive';val.textContent='+ '+fBRL(saldo);badge.className='balance-badge pos';badge.innerHTML=IC.checkBadge+' Sobrou '+fBRL(saldo)}else if(saldo<0){box.className='balance-box negative';val.className='balance-value negative';val.textContent='− '+fBRL(Math.abs(saldo));badge.className='balance-badge neg';badge.innerHTML=IC.warn+' Faltou '+fBRL(Math.abs(saldo))}else{box.className='balance-box';val.className='balance-value';val.textContent=fBRL(0);badge.className='balance-badge zero';badge.textContent='— Saldo zerado'}document.getElementById('bkRec').textContent=fBRL(rT);document.getElementById('bkRecT').textContent=fBRL(rT);document.getElementById('bkFix').textContent=fBRL(fT);document.getElementById('bkAli').textContent=fBRL(aT);document.getElementById('bkOut').textContent=fBRL(oT);document.getElementById('bkSaiT').textContent=fBRL(saidas)}
 
 function renderAll(){renderProdutos();renderFixas();renderReceitas();renderOutros();renderSaldo()}
 renderAll();
