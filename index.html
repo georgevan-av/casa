@@ -728,19 +728,25 @@ syncing=false;
 function calcSaldo(){const rT=receitas.reduce((s,r)=>s+r.valor,0),fT=fixas.reduce((s,f)=>s+f.valor,0),aT=produtos.reduce((s,p)=>s+p.total,0),oT=outros.reduce((s,o)=>s+o.valor,0);return rT-fT-aT-oT}
 
 async function postSheet(data){
-const r=await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
+try{
+const r=await fetch(SHEET_URL,{method:'POST',mode:'cors',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(data)});
 return r;
+}catch(e){
+const r=await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(data)});
+return r;
+}
 }
 
 async function loadFromSheet(){
 try{
 setSyncStatus('loading');
 const r=await fetch(SHEET_URL);
-const data=await r.json();
-if(data.produtos&&data.produtos.length){produtos=data.produtos;LS.set('fp',produtos)}
-if(data.fixas&&data.fixas.length){fixas=data.fixas;LS.set('ff',fixas)}
-if(data.receitas&&data.receitas.length){receitas=data.receitas;LS.set('fr',receitas)}
-if(data.outros&&data.outros.length){outros=data.outros;LS.set('fo',outros)}
+const txt=await r.text();
+const data=JSON.parse(txt);
+if(data.produtos&&data.produtos.length){produtos=data.produtos.map(function(p){return{id:p.id||nid(),nome:p.nome,qtd:p.qtd,vu:p.vu,total:p.total}});LS.set('fp',produtos)}
+if(data.fixas&&data.fixas.length){fixas=data.fixas.map(function(f){return{id:f.id||nid(),nome:f.nome,parcelas:f.parcelas,valor:f.valor,obs:f.obs||''}});LS.set('ff',fixas)}
+if(data.receitas&&data.receitas.length){receitas=data.receitas.map(function(r){return{id:r.id||nid(),data:r.data,desc:r.desc,valor:r.valor}});LS.set('fr',receitas)}
+if(data.outros&&data.outros.length){outros=data.outros.map(function(o){return{id:o.id||nid(),data:o.data,desc:o.desc,valor:o.valor}});LS.set('fo',outros)}
 renderAll();setSyncStatus('ok');
 }catch(e){console.error('Load error:',e);setSyncStatus('off')}
 }
