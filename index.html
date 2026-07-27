@@ -204,6 +204,17 @@
         }
         .ocr-item.selected .ocr-check{border-color:var(--green);background:var(--green);color:#fff}
 
+        .ocr-edit-zone{
+            display:none;padding:12px 0 0;
+        }
+        .ocr-edit-zone.show{display:block}
+        .ocr-edit-zone .field{margin-bottom:8px}
+        .ocr-edit-zone .field input{
+            width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--green);
+            background:var(--green-bg);color:var(--green);font-size:.9rem;font-weight:600;outline:none;
+        }
+        .ocr-edit-zone .field label{color:var(--green);font-size:.7rem}
+
         .ocr-raw{
             background:var(--surface2);border-radius:8px;padding:10px 12px;
             font-size:.72rem;color:var(--text3);margin-top:10px;
@@ -301,12 +312,22 @@
 
                 <!-- RESULTS -->
                 <div class="ocr-results" id="ocrResults">
-                    <div class="ocr-title">Preços encontrados (toque para usar)</div>
+                    <div class="ocr-title">Preços encontrados (toque para selecionar)</div>
                     <div id="ocrItems"></div>
+                    <div class="ocr-edit-zone" id="ocrEditZone">
+                        <div class="field">
+                            <label>Nome do Produto (edite se necessário)</label>
+                            <input type="text" id="ocrEditName" placeholder="Nome do produto">
+                        </div>
+                        <div class="field">
+                            <label>Preço (R$)</label>
+                            <input type="text" id="ocrEditPrice" readonly class="calc">
+                        </div>
+                    </div>
                     <div class="ocr-raw" id="ocrRaw" style="display:none"></div>
                     <div class="btn-row">
                         <button class="btn btn-ghost btn-sm" onclick="retakePhoto()" style="flex:0">📷 Outra foto</button>
-                        <button class="btn btn-green btn-sm" id="btnUseOcr" onclick="useSelectedOcr()" style="flex:1" disabled>Usar Selecionado</button>
+                        <button class="btn btn-green btn-sm" id="btnUseOcr" onclick="useSelectedOcr()" style="flex:1" disabled>✔ Usar Este</button>
                     </div>
                 </div>
             </div>
@@ -500,6 +521,7 @@ function closeCamera(){
 
 function retakePhoto(){
     document.getElementById('ocrResults').classList.remove('show');
+    document.getElementById('ocrEditZone').classList.remove('show');
     openCamera();
 }
 
@@ -520,6 +542,19 @@ async function capturePhoto(){
     document.getElementById('camLoading').classList.add('active');
     document.getElementById('ocrPct').textContent='0%';
 
+    // ─── PREPROCESS IMAGE: increase contrast for better OCR ───
+    const ctx2=canvas.getContext('2d');
+    const imgData2=ctx2.getImageData(0,0,canvas.width,canvas.height);
+    const d=imgData2.data;
+    for(let i=0;i<d.length;i+=4){
+        // Convert to grayscale
+        const gray=d[i]*.299+d[i+1]*.587+d[i+2]*.114;
+        // Increase contrast
+        const contrast=((gray-128)*1.6)+128;
+        const v=Math.max(0,Math.min(255,contrast));
+        d[i]=v;d[i+1]=v;d[i+2]=v;
+    }
+    ctx2.putImageData(imgData2,0,0);
     const imageData=canvas.toDataURL('image/png');
 
     try{
@@ -529,7 +564,8 @@ async function capturePhoto(){
                     const pct=Math.round(m.progress*100);
                     document.getElementById('ocrPct').textContent=pct+'%';
                 }
-            }
+            },
+            tessedit_char_whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzàáâãéêíóôõúüçÀÁÂÃÉÊÍÓÔÕÚÜÇ0123456789.,/$% °xX-',
         });
 
         document.getElementById('camLoading').classList.remove('active');
@@ -545,73 +581,142 @@ async function capturePhoto(){
 function processOcrResult(text,imgData){
     const raw=document.getElementById('ocrRaw');
     raw.textContent=text||'(nenhum texto reconhecido)';
-    raw.style.display='text'?'block':'none';
+    raw.style.display='block';
 
     ocrItems=[];
     ocrSelectedIdx=-1;
 
     if(!text||!text.trim()){
-        document.getElementById('ocrItems').innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:.82rem">Nenhum preço reconhecido. Tente uma foto mais clara da etiqueta.</div>';
+        document.getElementById('ocrItems').innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:.82rem">Nenhum texto reconhecido. Tente uma foto mais clara e mais perto da etiqueta.</div>';
         document.getElementById('ocrResults').classList.add('show');
         document.getElementById('btnUseOcr').disabled=true;
         return;
     }
 
-    // ─── EXTRACT PRICES ───
-    // Patterns for Brazilian price tags:
-    // R$ 12,99  /  R$2,50  /  12,99  /  12.99  /  2 x R$ 5,99  etc.
-    const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
+    const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
 
-    lines.forEach(line=>{
-        // Pattern 1: R$ followed by number
-        const rx1=/R\$\s*(\d{1,4}[.,]\d{2})/gi;
-        let match;
-        while((match=rx1.exec(line))!==null){
-            const val=match[1].replace(',','.');
-            const num=parseFloat(val);
-            if(num>0&&num<10000){
-                const context=line.replace(/R\$\s*\d[^\s]*/g,'').replace(/\s+/g,' ').trim();
-                ocrItems.push({price:num,priceStr:val.replace('.',','),name:context||'Item encontrado',line:line.trim()});
+    // ─── NOISE WORDS (ignore lines that are only these) ───
+    const noise=/^(OFERTA|promo[cç][aã]o|desconto|veja mais|confira|pre[cç]o|unidade|kg|lt|ml|un\b|cx\b|pct\b|dv\b|cod\.?|ean|c.digo| barras|\d{8,14}|\d{3,5}[.\-]\d{1,5}[.\-]\d{0,5})$/i;
+
+    // ─── PRICE PATTERNS ───
+    // R$ 12,99  |  R$2,50  |  R$ 1.299,99  |  2x R$ 5,99  |  12,99  |  1.299,99
+    function extractPrices(line){
+        const results=[];
+        // Pattern A: R$ with number (most reliable)
+        const rA=/(\d{1,3}(?:\.\d{3})*[.,]\d{2})/g;
+        let m;
+        while((m=rA.exec(line))!==null){
+            const raw=m[1];
+            const val=parseFloat(raw.replace(/\./g,'').replace(',','.'));
+            if(val>0&&val<50000){
+                const before=line.substring(0,m.index).trim();
+                const after=line.substring(m.index+m[0].length).trim();
+                results.push({price:val,before,after,raw});
+            }
+        }
+        return results;
+    }
+
+    // ─── CLEAN NAME: remove price noise from text ───
+    function cleanName(s){
+        if(!s)return'';
+        s=s.replace(/R\$\s*/gi,'');
+        s=s.replace(/\d{1,3}(?:\.\d{3})*[.,]\d{2}/g,'');
+        s=s.replace(/\bx\s*\d+/gi,'');
+        s=s.replace(/por\s*(?:unidade|kg|litro)?/gi,'');
+        s=s.replace(/(?:de\s*)?(?:por|a)\s*(?:un\b|kg\b|lt\b|ml\b)/gi,'');
+        s=s.replace(/pre[cç]o\s*(?:de\s*)?/gi,'');
+        s=s.replace(/\s+/g,' ').trim();
+        return s;
+    }
+
+    // ─── LOOK AHEAD/BEHIND for product name ───
+    function findNameForPrice(lineIdx,priceLine){
+        const candidates=[];
+
+        // Same line: text before price
+        const fromSame=cleanName(priceLine);
+        if(fromSame.length>1)candidates.push(fromSame);
+
+        // Previous lines (up to 3 above) — product name is usually above the price
+        for(let i=1;i<=3;i++){
+            const idx=lineIdx-i;
+            if(idx<0)break;
+            const prev=lines[idx];
+            if(noise.test(prev))continue;
+            const cleaned=cleanName(prev);
+            // skip if it's just numbers or too short
+            if(cleaned.length<2)continue;
+            if(/^\d+[.,x]?\d*$/.test(cleaned))continue;
+            candidates.push(cleaned);
+            break; // take the nearest meaningful line above
+        }
+
+        // Next line (below price sometimes has unit info)
+        if(lineIdx+1<lines.length){
+            const next=lines[lineIdx+1];
+            if(!noise.test(next)){
+                const unitMatch=next.match(/(por\s*(?:un\b|kg\b|lt\b|ml\b|100g|1kg)|unidade|kg|litro|ml)/i);
+                if(unitMatch)candidates.push(cleanName(next));
             }
         }
 
-        // Pattern 2: standalone number with comma decimal (likely price)
-        if(!rx1.test(line)){
-            const rx2=/(\d{1,3}[.,]\d{2})\b/g;
-            while((match=rx2.exec(line))!==null){
-                const val=match[1].replace(',','.');
-                const num=parseFloat(val);
-                if(num>0.5&&num<10000){
-                    const before=line.substring(0,match.index).trim();
-                    ocrItems.push({price:num,priceStr:val.replace('.',','),name:before||'Item encontrado',line:line.trim()});
-                }
+        // Pick the best name: longest meaningful text
+        candidates.sort((a,b)=>b.length-a.length);
+        return candidates[0]||'Item encontrado';
+    }
+
+    // ─── SCAN ALL LINES ───
+    lines.forEach((line,lineIdx)=>{
+        if(noise.test(line))return;
+
+        const prices=extractPrices(line);
+
+        prices.forEach(p=>{
+            // build name from before + after the price on same line
+            let namePart=cleanName(p.before+' '+p.after);
+            if(namePart.length<2){
+                namePart=findNameForPrice(lineIdx,line);
             }
-        }
+            // clean up
+            namePart=namePart.replace(/^[-–—•·|/\\:;,.\s]+/,'').replace(/[-–—•·|/\\:;,.\s]+$/,'').trim();
+            if(namePart.length<2)namePart='Item encontrado';
+
+            ocrItems.push({
+                price:p.price,
+                priceStr:p.price.replace('.',','),
+                name:namePart,
+                line:line
+            });
+        });
     });
 
-    // dedupe by price
+    // ─── DEDUPE ───
     const seen=new Set();
     ocrItems=ocrItems.filter(i=>{
-        const k=i.price+'|'+i.name;
+        const k=i.price.toFixed(2)+'|'+i.name.toLowerCase();
         if(seen.has(k))return false;
         seen.add(k);return true;
     });
 
-    // sort by most likely price (R$ pattern first, then by value)
+    // ─── SORT: items with R$ first, then by name length (longer = more likely product name) ───
     ocrItems.sort((a,b)=>{
-        const aHasR$=a.line.includes('R$')?0:1;
-        const bHasR$=b.line.includes('R$')?0:1;
-        return aHasR$-bHasR$||b.price-a.price;
+        const aR=a.line.includes('R$')?0:1;
+        const bR=b.line.includes('R$')?0:1;
+        if(aR!==bR)return aR-bR;
+        const aNameLen=a.name!=='Item encontrado'?a.name.length:0;
+        const bNameLen=b.name!=='Item encontrado'?b.name.length:0;
+        return bNameLen-aNameLen;
     });
 
     const el=document.getElementById('ocrItems');
     if(!ocrItems.length){
-        el.innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:.82rem">Preços não identificados na imagem. Tente mais perto da etiqueta.</div>';
+        el.innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:.82rem">Preços não identificados. Tente mais perto da etiqueta, com boa iluminação.</div>';
         document.getElementById('btnUseOcr').disabled=true;
     }else{
         el.innerHTML=ocrItems.map((item,idx)=>`
             <div class="ocr-item" onclick="selectOcrItem(${idx})" id="ocrItem${idx}">
-                <div class="ocr-name">${esc(item.name||'Produto')}</div>
+                <div class="ocr-name">${esc(item.name)}</div>
                 <div class="ocr-price">${fBRL(item.price)}</div>
                 <div class="ocr-check" id="ocrCheck${idx}"></div>
             </div>
@@ -624,31 +729,36 @@ function processOcrResult(text,imgData){
 
 function selectOcrItem(idx){
     document.querySelectorAll('.ocr-item').forEach(e=>e.classList.remove('selected'));
-    if(ocrSelectedIdx===idx){
-        ocrSelectedIdx=-1;
-        document.getElementById('btnUseOcr').disabled=true;
-    }else{
-        ocrSelectedIdx=idx;
-        document.getElementById('ocrItem'+idx).classList.add('selected');
-        document.getElementById('btnUseOcr').disabled=false;
-    }
+    ocrSelectedIdx=idx;
+    document.getElementById('ocrItem'+idx).classList.add('selected');
+
+    const item=ocrItems[idx];
+    document.getElementById('ocrEditName').value=item.name||'';
+    document.getElementById('ocrEditPrice').value=fBRL(item.price);
+    document.getElementById('ocrEditZone').classList.add('show');
+    document.getElementById('ocrEditName').focus();
+    document.getElementById('ocrEditName').select();
+    document.getElementById('btnUseOcr').disabled=false;
 }
 
 function useSelectedOcr(){
     if(ocrSelectedIdx<0||!ocrItems[ocrSelectedIdx])return;
-    const item=ocrItems[ocrSelectedIdx];
 
-    document.getElementById('pNome').value=item.name||'';
-    document.getElementById('pValor').value=item.priceStr;
+    const name=document.getElementById('ocrEditName').value.trim()||'Item encontrado';
+    const priceStr=document.getElementById('ocrEditPrice').value;
+    const price=pBRL(priceStr);
+
+    document.getElementById('pNome').value=name;
+    document.getElementById('pValor').value=price.toFixed(2).replace('.',',');
     document.getElementById('pQtd').value='1';
-    document.getElementById('pQtd').focus();
-
     calcP();
 
+    document.getElementById('pQtd').focus();
     document.getElementById('ocrResults').classList.remove('show');
+    document.getElementById('ocrEditZone').classList.remove('show');
     document.getElementById('camTrigger').style.display='block';
 
-    toast('Preço '+fBRL(item.price)+' detectado! Confirme e salve.','success');
+    toast('✅ '+name+' — '+fBRL(price)+' — confirme a quantidade e salve!','success');
 }
 
 /* ══════════════════════════════════════
