@@ -46,6 +46,10 @@
             font-size:.85rem;font-weight:800;color:var(--teal);
         }
         .header-greeting{color:rgba(255,255,255,.7);font-size:.7rem;font-weight:500}
+        .sync-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;margin-left:6px;animation:pulse 2s infinite}
+        .sync-dot.off{background:#f87171;animation:none}
+        .sync-dot.loading{background:#facc15;animation:pulse 1s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
         .header-name{color:#fff;font-size:1rem;font-weight:800;letter-spacing:-.3px}
         .header-notif{
             width:40px;height:40px;border-radius:50%;
@@ -470,7 +474,7 @@
             </div>
             <div>
                 <div class="header-greeting">Olá,</div>
-                <div class="header-name">Finanças Casa</div>
+                <div class="header-name">Finanças Casa <span class="sync-dot" id="syncDot" title="Sincronizado com Google Sheets"></span></div>
             </div>
         </div>
         <button class="header-notif" onclick="toast('Sem notificações novas','warn')">
@@ -697,9 +701,49 @@
 <div class="toast-box" id="toastBox"></div>
 
 <script>
+const SHEET_URL='https://script.google.com/macros/s/AKfycbxXonWG-G0_vhnVABYZWzYmoJjzUuZHctvcUomDZ5gLScA5TufW8OZA18UFzvFLvMAD/exec';
 const LS={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
 let produtos=LS.get('fp',[]),fixas=LS.get('ff',[]),receitas=LS.get('fr',[]),outros=LS.get('fo',[]);
-function save(){LS.set('fp',produtos);LS.set('ff',fixas);LS.set('fr',receitas);LS.set('fo',outros)}
+let syncing=false;
+
+function setSyncStatus(s){const d=document.getElementById('syncDot');if(!d)return;d.className='sync-dot'+(s==='ok'?'':s==='loading'?' loading':' off')}
+
+function save(){LS.set('fp',produtos);LS.set('ff',fixas);LS.set('fr',receitas);LS.set('fo',outros);syncAll()}
+
+async function syncAll(){
+if(syncing)return;syncing=true;setSyncStatus('loading');
+try{
+await Promise.all([
+postSheet({action:'saveProdutos',items:produtos}),
+postSheet({action:'saveFixas',items:fixas}),
+postSheet({action:'saveReceitas',items:receitas}),
+postSheet({action:'saveOutros',items:outros}),
+postSheet({action:'saveSaldo',saldo:calcSaldo()})
+]);
+setSyncStatus('ok');
+}catch(e){console.error('Sync error:',e);setSyncStatus('off')}
+syncing=false;
+}
+
+function calcSaldo(){const rT=receitas.reduce((s,r)=>s+r.valor,0),fT=fixas.reduce((s,f)=>s+f.valor,0),aT=produtos.reduce((s,p)=>s+p.total,0),oT=outros.reduce((s,o)=>s+o.valor,0);return rT-fT-aT-oT}
+
+async function postSheet(data){
+const r=await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)});
+return r;
+}
+
+async function loadFromSheet(){
+try{
+setSyncStatus('loading');
+const r=await fetch(SHEET_URL);
+const data=await r.json();
+if(data.produtos&&data.produtos.length){produtos=data.produtos;LS.set('fp',produtos)}
+if(data.fixas&&data.fixas.length){fixas=data.fixas;LS.set('ff',fixas)}
+if(data.receitas&&data.receitas.length){receitas=data.receitas;LS.set('fr',receitas)}
+if(data.outros&&data.outros.length){outros=data.outros;LS.set('fo',outros)}
+renderAll();setSyncStatus('ok');
+}catch(e){console.error('Load error:',e);setSyncStatus('off')}
+}
 function nid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
 function pBRL(s){if(typeof s==='number')return s;if(!s)return 0;s=s.replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.');const n=parseFloat(s);return isNaN(n)?0:n}
 function fBRL(v){return'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
@@ -768,6 +812,7 @@ function renderSaldo(){const rT=receitas.reduce((s,r)=>s+r.valor,0),fT=fixas.red
 
 function renderAll(){renderProdutos();renderFixas();renderReceitas();renderOutros();renderSaldo()}
 renderAll();
+loadFromSheet();
 </script>
 </body>
 </html>
