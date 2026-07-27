@@ -665,6 +665,19 @@
 </div>
 
 <!-- MODALS -->
+<div class="modal-bg" id="mProduto">
+    <div class="modal">
+        <h2 id="mProdTitle">Editar Produto</h2>
+        <input type="hidden" id="epId">
+        <div class="field"><label>Produto</label><input type="text" id="epNome" placeholder="Nome do produto"></div>
+        <div class="field-row">
+            <div class="field"><label>Qtd</label><input type="number" id="epQtd" min="1" value="1" inputmode="numeric" oninput="calcEP()"></div>
+            <div class="field"><label>Valor Unit. (R$)</label><input type="text" id="epValor" placeholder="0,00" inputmode="decimal" oninput="calcEP()"></div>
+        </div>
+        <div class="field"><label>Total (calculado)</label><input type="text" id="epTotalCalc" readonly class="calc"></div>
+        <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('mProduto')">Cancelar</button><button class="btn btn-green" onclick="saveProdutoEdit()">Salvar</button></div>
+    </div>
+</div>
 <div class="modal-bg" id="mFixa">
     <div class="modal">
         <h2 id="mFixaTitle">Nova Despesa Fixa</h2>
@@ -793,7 +806,10 @@ function useSelectedOcr(){if(ocrSelectedIdx<0||!ocrItems[ocrSelectedIdx])return;
 function calcP(){const q=parseInt(document.getElementById('pQtd').value)||0,v=pBRL(document.getElementById('pValor').value);document.getElementById('pTotalCalc').value=fBRL(q*v)}
 function addProduto(){const nome=document.getElementById('pNome').value.trim(),qtd=parseInt(document.getElementById('pQtd').value)||0,val=pBRL(document.getElementById('pValor').value),total=qtd*val;if(!nome){toast('Informe o nome do produto','error');return}if(qtd<=0){toast('Quantidade deve ser > 0','error');return}if(val<=0){toast('Informe o valor unitário','error');return}produtos.push({id:nid(),nome,qtd,vu:val,total});save();document.getElementById('pNome').value='';document.getElementById('pQtd').value='1';document.getElementById('pValor').value='';document.getElementById('pTotalCalc').value='';renderProdutos();toast(IC.checkBadge+' Item adicionado!','success')}
 function delProduto(id){if(!confirm('Remover este item?'))return;produtos=produtos.filter(p=>p.id!==id);save();renderProdutos()}
-function renderProdutos(){const total=produtos.reduce((s,p)=>s+p.total,0);document.getElementById('listaTotal').textContent=fBRL(total);document.getElementById('listaCount').textContent=produtos.length+' itens';const el=document.getElementById('produtosList'),empty=document.getElementById('produtosEmpty'),tot=document.getElementById('produtosTotal');if(!produtos.length){el.innerHTML='';empty.style.display='block';tot.style.display='none';return}empty.style.display='none';tot.style.display='flex';tot.innerHTML=`<span class="st-label">Total</span><span class="st-val blue">${fBRL(total)}</span>`;el.innerHTML=`<table class="sheet"><thead><tr><th>Produto</th><th>Qtd</th><th>V.U.</th><th>Valor Total</th><th></th></tr></thead><tbody>${produtos.map(p=>`<tr><td>${esc(p.nome)}</td><td>${p.qtd}x</td><td>${fBRL(p.vu)}</td><td>${fBRL(p.total)}</td><td><div class="sheet-actions"><button class="row-edit" onclick="toast('Em breve','warn')">${IC.edit}</button><button class="row-del" onclick="delProduto('${p.id}')">${IC.trash}</button></div></td></tr>`).join('')}</tbody></table>`}
+function openProdutoEdit(id){const p=produtos.find(x=>x.id===id);if(!p)return;document.getElementById('epId').value=id;document.getElementById('epNome').value=p.nome;document.getElementById('epQtd').value=p.qtd;document.getElementById('epValor').value=p.vu.toFixed(2).replace('.',',');document.getElementById('epTotalCalc').value=fBRL(p.total);document.getElementById('mProdTitle').textContent='Editar Produto';openModal('mProduto')}
+function calcEP(){const q=parseInt(document.getElementById('epQtd').value)||0,v=pBRL(document.getElementById('epValor').value);document.getElementById('epTotalCalc').value=fBRL(q*v)}
+function saveProdutoEdit(){const id=document.getElementById('epId').value,nome=document.getElementById('epNome').value.trim(),qtd=parseInt(document.getElementById('epQtd').value)||0,val=pBRL(document.getElementById('epValor').value),total=qtd*val;if(!nome){toast('Informe o nome do produto','error');return}if(qtd<=0){toast('Quantidade deve ser > 0','error');return}if(val<=0){toast('Informe o valor unitário','error');return}if(id){const p=produtos.find(x=>x.id===id);if(p){p.nome=nome;p.qtd=qtd;p.vu=val;p.total=total}}save();closeModal('mProduto');renderProdutos();toast('Produto atualizado!','success')}
+function renderProdutos(){const total=produtos.reduce((s,p)=>s+p.total,0);document.getElementById('listaTotal').textContent=fBRL(total);document.getElementById('listaCount').textContent=produtos.length+' itens';const el=document.getElementById('produtosList'),empty=document.getElementById('produtosEmpty'),tot=document.getElementById('produtosTotal');if(!produtos.length){el.innerHTML='';empty.style.display='block';tot.style.display='none';return}empty.style.display='none';tot.style.display='flex';tot.innerHTML=`<span class="st-label">Total</span><span class="st-val blue">${fBRL(total)}</span>`;el.innerHTML=`<table class="sheet"><thead><tr><th>Produto</th><th>Qtd</th><th>V.U.</th><th>Valor Total</th><th></th></tr></thead><tbody>${produtos.map(p=>`<tr><td>${esc(p.nome)}</td><td>${p.qtd}x</td><td>${fBRL(p.vu)}</td><td>${fBRL(p.total)}</td><td><div class="sheet-actions"><button class="row-edit" onclick="openProdutoEdit('${p.id}')">${IC.edit}</button><button class="row-del" onclick="delProduto('${p.id}')">${IC.trash}</button></div></td></tr>`).join('')}</tbody></table>`}
 
 function aliTotal(){return produtos.reduce((s,p)=>s+p.total,0)}
 function openFixaModal(){document.getElementById('efId').value='';document.getElementById('efNome').value='';document.getElementById('efParc').value='12';document.getElementById('efValor').value='';document.getElementById('efObs').value='';document.getElementById('mFixaTitle').textContent='Nova Despesa Fixa';openModal('mFixa')}
