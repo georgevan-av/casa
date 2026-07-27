@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><title>Importar dados da planilha</title>
+<style>
+body{font-family:Inter,system-ui,sans-serif;background:#f0fdf4;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0}
+.box{background:#fff;border-radius:16px;padding:40px;box-shadow:0 4px 24px rgba(0,0,0,.08);text-align:center;max-width:420px}
+h2{color:#0A5A50;margin-bottom:8px}
+p{color:#6b7280;font-size:.9rem;margin-bottom:20px}
+.btn{background:#0A5A50;color:#fff;border:none;padding:14px 32px;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .15s}
+.btn:hover{background:#084a42}
+.btn:active{transform:scale(.97)}
+.ok{color:#16a34a;font-weight:700;margin-top:16px;display:none}
+.err{color:#ef4444;font-weight:700;margin-top:16px;display:none}
+</style>
+</head>
+<body>
+<div class="box">
+<h2>Importar dados da planilha</h2>
+<p>Clique abaixo para carregar os dados da família Viana no app financeiro.</p>
+<button class="btn" onclick="importar()">Importar agora</button>
+<div class="ok" id="ok">Dados importados com sucesso! Abra o app.</div>
+<div class="err" id="err"></div>
+</div>
+<script>
+function nid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+
+function importar(){
+try{
+
+var produtos=[
+{nome:"Arroz",qtd:8,vu:5,total:40},
+{nome:"Macarrão",qtd:5,vu:4,total:20},
+{nome:"Feijão",qtd:4,vu:9,total:36},
+{nome:"Flocão para cuscuz",qtd:5,vu:2.5,total:12.5},
+{nome:"Café",qtd:2,vu:10,total:20},
+{nome:"Leite em pó",qtd:10,vu:8,total:80},
+{nome:"Manteiga/Margarina",qtd:4,vu:3.5,total:14},
+{nome:"Óleo",qtd:2,vu:7.5,total:15},
+{nome:"Sal",qtd:1,vu:3.5,total:3.5},
+{nome:"Pão",qtd:30,vu:4,total:120},
+{nome:"Macarrão para sopa",qtd:4,vu:6,total:24},
+{nome:"Bolacha",qtd:5,vu:5,total:25},
+{nome:"Ovo",qtd:3,vu:13,total:39},
+{nome:"Frango",qtd:9,vu:12,total:108},
+{nome:"Chambaril",qtd:4,vu:20,total:80},
+{nome:"Carne moída",qtd:2,vu:26,total:52},
+{nome:"Osso",qtd:3,vu:9,total:27},
+{nome:"Sabão em pó",qtd:4,vu:5,total:20},
+{nome:"Água Sanitária",qtd:3,vu:3.5,total:10.5},
+{nome:"Vinagre",qtd:2,vu:2,total:4},
+{nome:"Detergente",qtd:5,vu:2.5,total:12.5},
+{nome:"Desinfetante G",qtd:1,vu:7,total:7},
+{nome:"Amaciante",qtd:1,vu:10,total:10},
+{nome:"Pipoca",qtd:2,vu:5,total:10},
+{nome:"Trigo",qtd:2,vu:5,total:10},
+{nome:"Frutas",qtd:1,vu:50,total:50},
+{nome:"Açúcar",qtd:2,vu:5,total:10},
+{nome:"Adoçante",qtd:1,vu:11,total:11},
+{nome:"Água (garrafão)",qtd:8,vu:7,total:56},
+{nome:"Verduras",qtd:1,vu:60,total:60}
+].map(function(p){return{id:nid(),nome:p.nome,qtd:p.qtd,vu:p.vu,total:p.total}});
+
+var fixas=[
+{nome:"Cartão",parcelas:1,valor:166,obs:""},
+{nome:"Perfume",parcelas:1,valor:190.94,obs:""},
+{nome:"Luz",parcelas:1,valor:300,obs:""},
+{nome:"Água",parcelas:1,valor:200,obs:""},
+{nome:"Aluguel",parcelas:1,valor:600,obs:""},
+{nome:"Cama",parcelas:1,valor:120,obs:""},
+{nome:"Faculdade",parcelas:1,valor:90,obs:""}
+].map(function(f){return{id:nid(),nome:f.nome,parcelas:f.parcelas,valor:f.valor,obs:f.obs}});
+
+var receitas=[
+{data:"2026-07-05",desc:"Quinzena",valor:900},
+{data:"2026-07-20",desc:"Quinzena",valor:810},
+{data:"2026-07-28",desc:"Bolsa",valor:950}
+].map(function(r){return{id:nid(),data:r.data,desc:r.desc,valor:r.valor}});
+
+var outros=[];
+
+localStorage.setItem('fp',JSON.stringify(produtos));
+localStorage.setItem('ff',JSON.stringify(fixas));
+localStorage.setItem('fr',JSON.stringify(receitas));
+localStorage.setItem('fo',JSON.stringify(outros));
+
+document.getElementById('ok').style.display='block';
+document.getElementById('err').style.display='none';
+
+}catch(e){
+document.getElementById('err').textContent='Erro: '+e.message;
+document.getElementById('err').style.display='block';
+}
+}
+</script>
+</body>
+</html>
