@@ -26,15 +26,16 @@
             --safe-b:env(safe-area-inset-bottom,0px);--nav-h:72px;
             --radius:20px;--radius-sm:14px;--radius-xs:10px;--radius-pill:50px;
         }
-        html,body{height:100%;overflow:hidden}
-        body{font-family:'Inter',-apple-system,'SF Pro Display','Segoe UI',sans-serif;background:var(--gray100);color:var(--black);line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-        .app{display:flex;flex-direction:column;height:100%;height:100dvh;background:var(--gray100)}
+        html,body{height:100%;overflow:hidden;touch-action:manipulation}
+        body{font-family:'Inter',-apple-system,'SF Pro Display','Segoe UI',sans-serif;background:var(--gray100);color:var(--black);line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+        .app{display:flex;flex-direction:column;height:100%;height:100dvh;height:-webkit-fill-available;background:var(--gray100)}
 
         .header{
             background:linear-gradient(135deg,var(--teal),var(--teal2));
             padding:16px 20px;padding-top:calc(16px + env(safe-area-inset-top,0px));
             display:flex;align-items:center;justify-content:space-between;
             flex-shrink:0;z-index:20;border-radius:0 0 var(--radius) var(--radius);
+            box-shadow:0 4px 16px rgba(10,90,80,.15);
         }
         .header-left{display:flex;align-items:center;gap:12px}
         .header-avatar{
@@ -55,13 +56,14 @@
         .content{
             flex:1;overflow-y:auto;overflow-x:hidden;
             padding:18px 16px;
-            padding-bottom:calc(var(--nav-h) + 30px + var(--safe-b));
+            padding-bottom:calc(var(--nav-h) + 40px + var(--safe-b));
             -webkit-overflow-scrolling:touch;
+            scroll-behavior:smooth;
         }
 
         .balance-card{
             background:linear-gradient(135deg,var(--teal),var(--teal2),var(--teal-light));
-            border-radius:var(--radius);padding:24px 22px;margin-bottom:18px;
+            border-radius:var(--radius);padding:22px 20px;margin-bottom:18px;
             color:#fff;position:relative;overflow:hidden;
             box-shadow:0 8px 32px rgba(10,90,80,.3);
         }
@@ -304,6 +306,7 @@
             display:flex;align-items:center;z-index:50;
             padding-bottom:var(--safe-b);
             border-radius:var(--radius) var(--radius) 0 0;
+            box-shadow:0 -4px 20px rgba(10,90,80,.2);
         }
         .bn-item{
             flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
@@ -349,6 +352,7 @@
             padding:24px 18px;width:100%;max-width:480px;max-height:85vh;
             overflow-y:auto;padding-bottom:calc(24px + var(--safe-b));
             animation:slideUp .25s cubic-bezier(.4,0,.2,1);
+            -webkit-overflow-scrolling:touch;
         }
         @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
         .modal h2{font-size:1.05rem;font-weight:800;margin-bottom:18px;letter-spacing:-.3px;color:var(--black)}
@@ -356,12 +360,13 @@
         .modal .field input,.modal .field select{width:100%}
         .modal-actions{display:flex;gap:10px;margin-top:20px}.modal-actions .btn{flex:1}
 
-        .toast-box{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:12px;right:12px;z-index:200;display:flex;flex-direction:column;gap:8px}
+        .toast-box{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:12px;right:12px;z-index:200;display:flex;flex-direction:column;gap:8px;pointer-events:none}
         .toast{
             padding:14px 18px;border-radius:var(--radius-sm);
             font-size:.8rem;font-weight:600;display:flex;align-items:center;gap:10px;
             animation:tIn .3s cubic-bezier(.4,0,.2,1);
             box-shadow:0 8px 30px rgba(0,0,0,.12);
+            pointer-events:auto;
         }
         .toast svg{width:16px;height:16px;flex-shrink:0}
         .toast.warn{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(245,158,11,.15)}
@@ -373,6 +378,17 @@
         @keyframes pulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.6;transform:scale(1.05)}}
 
         .page.page-saldo .balance-card{display:none}
+
+        @media(max-width:360px){
+            .content{padding:14px 12px}
+            .balance-card{padding:18px 16px}
+            .balance-value{font-size:1.7rem}
+            .sum-card{padding:14px 14px}
+            .sum-val{font-size:1.2rem}
+            .header{padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top,0px))}
+            .bn-item{padding:8px 2px 6px}
+            .bn-center-btn{width:50px;height:50px}
+        }
     </style>
 </head>
 <body>
