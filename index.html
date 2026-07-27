@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>💰 Finanças Casa</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        :root{
+            --bg:#0c0e14;--surface:#151820;--surface2:#1c2030;--surface3:#242838;
+            --border:#2a2e3e;--text:#e8e8ec;--text2:#a0a4b8;--text3:#6b7094;
+            --green:#22c55e;--green-bg:rgba(34,197,94,.12);
+            --red:#ef4444;--red-bg:rgba(239,68,68,.12);
+            --blue:#3b82f6;--blue-bg:rgba(59,130,246,.12);
+            --amber:#f59e0b;--amber-bg:rgba(245,158,11,.12);
+            --purple:#a855f7;--purple-bg:rgba(168,85,247,.12);
+            --safe-b:env(safe-area-inset-bottom,0px);--nav-h:64px;
+        }
+        html,body{height:100%;overflow:hidden}
+        body{
+            font-family:-apple-system,'SF Pro Display','Segoe UI',Roboto,sans-serif;
+            background:var(--bg);color:var(--text);line-height:1.45;
+            -webkit-font-smoothing:antialiased;
+        }
+        .app{display:flex;flex-direction:column;height:100%;height:100dvh}
+
+        /* ─── TOP BAR ─── */
+        .topbar{
+            background:var(--surface);border-bottom:1px solid var(--border);
+            padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top,0px));
+            display:flex;align-items:center;gap:10px;flex-shrink:0;z-index:20;
+        }
+        .topbar .logo{font-size:1.1rem;font-weight:700;display:flex;align-items:center;gap:8px}
+
+        /* ─── CONTENT ─── */
+        .content{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px;padding-bottom:calc(var(--nav-h) + 20px + var(--safe-b));-webkit-overflow-scrolling:touch}
+
+        /* ─── BOTTOM NAV ─── */
+        .bottom-nav{
+            position:fixed;bottom:0;left:0;right:0;
+            background:var(--surface);border-top:1px solid var(--border);
+            display:flex;z-index:50;padding-bottom:var(--safe-b);
+        }
+        .bn-item{
+            flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+            padding:8px 4px 6px;cursor:pointer;color:var(--text3);font-size:.62rem;
+            font-weight:600;letter-spacing:.3px;transition:color .12s;
+            -webkit-user-select:none;user-select:none;
+        }
+        .bn-item .bn-icon{font-size:1.35rem;transition:transform .12s}
+        .bn-item.active{color:var(--green)}
+        .bn-item.active .bn-icon{transform:scale(1.1)}
+        .bn-item:active .bn-icon{transform:scale(.9)}
+
+        /* ─── PAGES ─── */
+        .page{display:none}.page.active{display:block}
+        .page-title{font-size:1.25rem;font-weight:700;margin-bottom:2px}
+        .page-sub{font-size:.78rem;color:var(--text3);margin-bottom:16px}
+
+        /* ─── CARDS ─── */
+        .sum-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:14px;position:relative;overflow:hidden}
+        .sum-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:0 4px 4px 0}
+        .sum-card.c-green::before{background:var(--green)}
+        .sum-card.c-red::before{background:var(--red)}
+        .sum-card.c-blue::before{background:var(--blue)}
+        .sum-card.c-amber::before{background:var(--amber)}
+        .sum-card.c-purple::before{background:var(--purple)}
+        .sum-label{font-size:.72rem;color:var(--text3);margin-bottom:4px;font-weight:500}
+        .sum-val{font-size:1.6rem;font-weight:700;letter-spacing:-.5px}
+        .sum-val.green{color:var(--green)}.sum-val.red{color:var(--red)}.sum-val.blue{color:var(--blue)}.sum-val.amber{color:var(--amber)}
+        .sum-sub{font-size:.7rem;color:var(--text3);margin-top:2px}
+        .sum-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+        /* ─── CARD ─── */
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px}
+        .card-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border)}
+        .card-head h3{font-size:.92rem;font-weight:600}
+
+        /* ─── LIST ITEMS ─── */
+        .item{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px}
+        .item:last-child{border-bottom:none}
+        .item-info{flex:1;min-width:0}
+        .item-name{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .item-meta{font-size:.72rem;color:var(--text3);margin-top:2px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+        .tag{display:inline-flex;padding:2px 8px;border-radius:6px;font-size:.68rem;font-weight:600}
+        .tag-green{background:var(--green-bg);color:var(--green)}
+        .tag-red{background:var(--red-bg);color:var(--red)}
+        .tag-amber{background:var(--amber-bg);color:var(--amber)}
+        .tag-blue{background:var(--blue-bg);color:var(--blue)}
+        .item-val{font-size:.95rem;font-weight:700;white-space:nowrap}
+        .item-val.green{color:var(--green)}.item-val.red{color:var(--red)}.item-val.amber{color:var(--amber)}
+        .item-actions{display:flex;gap:4px;flex-shrink:0}
+        .item-actions button{
+            width:34px;height:34px;border-radius:8px;border:none;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;font-size:.95rem;
+            background:var(--surface2);color:var(--text3);transition:all .12s;
+        }
+        .item-actions button:active{transform:scale(.9)}
+        .btn-del:active{background:var(--red-bg)!important;color:var(--red)!important}
+
+        /* ─── FORMS ─── */
+        .add-btn{
+            width:100%;padding:14px;border-radius:12px;border:2px dashed var(--border);
+            background:transparent;color:var(--text3);font-size:.88rem;font-weight:600;
+            cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+            transition:all .12s;font-family:inherit;margin-bottom:14px;
+        }
+        .add-btn:active{border-color:var(--green);color:var(--green);background:var(--green-bg)}
+
+        .form-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
+        .form-card h3{font-size:.92rem;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+        .field{margin-bottom:12px}
+        .field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);margin-bottom:5px;font-weight:600}
+        .field input,.field select{
+            width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--border);
+            background:var(--surface2);color:var(--text);font-size:.9rem;outline:none;
+            transition:border .12s;font-family:inherit;
+        }
+        .field input:focus,.field select:focus{border-color:var(--green)}
+        .field input[readonly]{background:var(--surface3);color:var(--text2);cursor:not-allowed}
+        .field input.calc{background:var(--surface3);color:var(--amber);font-weight:700;border-color:transparent}
+        .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        .btn{
+            padding:12px 20px;border-radius:10px;border:none;cursor:pointer;
+            font-size:.88rem;font-weight:600;display:inline-flex;align-items:center;
+            justify-content:center;gap:6px;transition:all .12s;font-family:inherit;width:100%;
+        }
+        .btn:active{transform:scale(.97)}
+        .btn-green{background:var(--green);color:#fff}
+        .btn-red{background:var(--red-bg);color:var(--red);border:1px solid transparent}
+        .btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+        .btn-sm{padding:8px 14px;font-size:.8rem;width:auto}
+        .btn-row{display:flex;gap:8px;margin-top:14px}.btn-row .btn{flex:1}
+
+        /* ─── CAMERA / OCR ─── */
+        .camera-box{
+            background:var(--surface);border:1px solid var(--border);border-radius:14px;
+            overflow:hidden;margin-bottom:14px;
+        }
+        .camera-trigger{
+            padding:28px 16px;text-align:center;cursor:pointer;position:relative;
+        }
+        .camera-trigger .cam-icon{font-size:2.8rem;display:block;margin-bottom:8px;opacity:.7}
+        .camera-trigger p{font-size:.85rem;color:var(--text3)}
+        .camera-trigger .cam-sub{font-size:.7rem;color:var(--text3);opacity:.5;margin-top:4px}
+
+        .camera-view{display:none;position:relative;background:#000}
+        .camera-view video{width:100%;display:block;object-fit:cover;max-height:50vh;border-radius:0}
+        .camera-view canvas{display:none}
+        .camera-overlay{
+            position:absolute;bottom:0;left:0;right:0;
+            padding:16px;display:flex;flex-direction:column;align-items:center;gap:10px;
+            background:linear-gradient(transparent,rgba(0,0,0,.8));
+        }
+        .camera-overlay .hint{
+            font-size:.75rem;color:rgba(255,255,255,.7);text-align:center;
+            background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;
+        }
+        .capture-btn{
+            width:64px;height:64px;border-radius:50%;border:4px solid #fff;
+            background:rgba(255,255,255,.2);cursor:pointer;transition:all .15s;
+            display:flex;align-items:center;justify-content:center;font-size:1.5rem;
+        }
+        .capture-btn:active{transform:scale(.9);background:rgba(255,255,255,.4)}
+        .camera-close{
+            position:absolute;top:10px;right:10px;z-index:5;
+            width:36px;height:36px;border-radius:50%;border:none;
+            background:rgba(0,0,0,.6);color:#fff;font-size:1.1rem;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);
+        }
+
+        .camera-loading{
+            display:none;padding:24px 16px;text-align:center;
+        }
+        .camera-loading.active{display:block}
+        .loading-spinner{
+            width:40px;height:40px;border:3px solid var(--surface3);border-top-color:var(--green);
+            border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;
+        }
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .loading-text{font-size:.82rem;color:var(--text3)}
+        .loading-pct{font-size:1.4rem;font-weight:700;color:var(--green);margin-top:4px}
+
+        /* ─── OCR RESULTS ─── */
+        .ocr-results{display:none;padding:14px 16px;border-top:1px solid var(--border)}
+        .ocr-results.show{display:block}
+        .ocr-title{font-size:.78rem;color:var(--text3);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+        .ocr-item{
+            display:flex;justify-content:space-between;align-items:center;
+            padding:10px 12px;border-radius:10px;margin-bottom:6px;cursor:pointer;
+            transition:background .12s;
+        }
+        .ocr-item:active{background:var(--surface3)}
+        .ocr-item.selected{background:var(--green-bg);border:1px solid rgba(34,197,94,.3)}
+        .ocr-item .ocr-name{font-size:.85rem;font-weight:500;flex:1}
+        .ocr-item .ocr-price{font-size:.95rem;font-weight:700;color:var(--amber);margin-left:10px;white-space:nowrap}
+        .ocr-item .ocr-check{
+            width:22px;height:22px;border-radius:50%;border:2px solid var(--border);
+            margin-left:8px;display:flex;align-items:center;justify-content:center;
+            font-size:.7rem;flex-shrink:0;transition:all .12s;
+        }
+        .ocr-item.selected .ocr-check{border-color:var(--green);background:var(--green);color:#fff}
+
+        .ocr-raw{
+            background:var(--surface2);border-radius:8px;padding:10px 12px;
+            font-size:.72rem;color:var(--text3);margin-top:10px;
+            max-height:80px;overflow-y:auto;font-family:monospace;word-break:break-all;
+        }
+
+        /* ─── ALERT ─── */
+        .alert{padding:11px 14px;border-radius:10px;font-size:.8rem;display:flex;align-items:center;gap:8px;margin-bottom:14px;font-weight:500}
+        .alert.amber{background:var(--amber-bg);color:var(--amber)}
+        .alert.green{background:var(--green-bg);color:var(--green)}
+        .alert.red{background:var(--red-bg);color:var(--red)}
+
+        /* ─── BALANCE ─── */
+        .balance-box{background:var(--surface);border:2px solid var(--border);border-radius:16px;padding:24px 16px;text-align:center;margin-bottom:14px}
+        .balance-box.positive{border-color:rgba(34,197,94,.3)}
+        .balance-box.negative{border-color:rgba(239,68,68,.3)}
+        .balance-label{font-size:.82rem;color:var(--text3);margin-bottom:6px;font-weight:500}
+        .balance-value{font-size:2.2rem;font-weight:800;letter-spacing:-1px;line-height:1.1}
+        .balance-value.positive{color:var(--green)}.balance-value.negative{color:var(--red)}
+        .balance-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:700;margin-top:10px}
+        .balance-badge.pos{background:var(--green-bg);color:var(--green)}
+        .balance-badge.neg{background:var(--red-bg);color:var(--red)}
+        .balance-badge.zero{background:var(--surface2);color:var(--text3)}
+
+        .bk-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+        .bk-card h4{font-size:.82rem;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+        .bk-row{display:flex;justify-content:space-between;padding:5px 0;font-size:.8rem}
+        .bk-row .bl{color:var(--text2)}.bk-row .bv{font-weight:600}
+        .bk-row.total{font-weight:700;padding-top:8px;margin-top:4px;border-top:1px solid var(--border)}
+
+        /* ─── EMPTY ─── */
+        .empty{text-align:center;padding:28px 16px;color:var(--text3)}
+        .empty .e-icon{font-size:2.2rem;margin-bottom:6px;opacity:.4}
+        .empty p{font-size:.82rem}
+
+        /* ─── MODAL ─── */
+        .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:flex-end;justify-content:center}
+        .modal-bg.open{display:flex}
+        .modal{background:var(--surface);border-radius:16px 16px 0 0;padding:20px 16px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;padding-bottom:calc(20px + var(--safe-b));animation:slideUp .2s ease}
+        @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+        .modal h2{font-size:1.05rem;font-weight:700;margin-bottom:16px}
+        .modal .field{margin-bottom:12px}
+        .modal .field input,.modal .field select{width:100%}
+        .modal-actions{display:flex;gap:8px;margin-top:18px}.modal-actions .btn{flex:1}
+
+        /* ─── TOAST ─── */
+        .toast-box{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:12px;right:12px;z-index:200;display:flex;flex-direction:column;gap:6px}
+        .toast{padding:12px 16px;border-radius:10px;font-size:.82rem;font-weight:500;display:flex;align-items:center;gap:8px;animation:tIn .2s ease;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+        .toast.warn{background:#78350f;color:#fbbf24}
+        .toast.error{background:#7f1d1d;color:#fca5a5}
+        .toast.success{background:#14532d;color:#86efac}
+        @keyframes tIn{from{transform:translateY(-20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+        .scan-pulse{animation:pulse 1.5s ease-in-out infinite}
+        @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="topbar"><div class="logo"><span>💰</span> Finanças Casa</div></div>
+
+    <div class="content">
+
+        <!-- ════════ M1: PRODUTOS ════════ -->
+        <div class="page active" id="pg-produtos">
+            <div class="page-title">🛒 Lista de Produtos</div>
+            <div class="page-sub">Tire foto do preço na gôndola para preencher automático</div>
+
+            <!-- CAMERA BOX -->
+            <div class="camera-box" id="cameraBox">
+                <!-- TRIGGER -->
+                <div class="camera-trigger" id="camTrigger" onclick="openCamera()">
+                    <span class="cam-icon scan-pulse">📸</span>
+                    <p>Tirar foto do preço na gôndola</p>
+                    <div class="cam-sub">A câmera vai ler o preço automaticamente</div>
+                </div>
+
+                <!-- LIVE VIEW -->
+                <div class="camera-view" id="camView">
+                    <button class="camera-close" onclick="closeCamera()">✕</button>
+                    <video id="camVideo" autoplay playsinline></video>
+                    <div class="camera-overlay">
+                        <div class="hint">Aponte para a etiqueta de preço e toque no botão</div>
+                        <button class="capture-btn" onclick="capturePhoto()">📷</button>
+                    </div>
+                    <canvas id="camCanvas"></canvas>
+                </div>
+
+                <!-- LOADING -->
+                <div class="camera-loading" id="camLoading">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Analisando imagem...</div>
+                    <div class="loading-pct" id="ocrPct">0%</div>
+                </div>
+
+                <!-- RESULTS -->
+                <div class="ocr-results" id="ocrResults">
+                    <div class="ocr-title">Preços encontrados (toque para usar)</div>
+                    <div id="ocrItems"></div>
+                    <div class="ocr-raw" id="ocrRaw" style="display:none"></div>
+                    <div class="btn-row">
+                        <button class="btn btn-ghost btn-sm" onclick="retakePhoto()" style="flex:0">📷 Outra foto</button>
+                        <button class="btn btn-green btn-sm" id="btnUseOcr" onclick="useSelectedOcr()" style="flex:1" disabled>Usar Selecionado</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sum-card c-blue">
+                <div class="sum-label">Total da Lista</div>
+                <div class="sum-val blue" id="listaTotal">R$ 0,00</div>
+                <div class="sum-sub" id="listaCount">0 itens</div>
+            </div>
+
+            <!-- ADD FORM -->
+            <div class="form-card">
+                <h3>➕ Adicionar Item Manual</h3>
+                <div class="field"><label>Produto</label><input type="text" id="pNome" placeholder="Arroz, feijão, leite..."></div>
+                <div class="field-row">
+                    <div class="field"><label>Qtd</label><input type="number" id="pQtd" min="1" value="1" inputmode="numeric" oninput="calcP()"></div>
+                    <div class="field"><label>Valor Unit. (R$)</label><input type="text" id="pValor" placeholder="0,00" inputmode="decimal" oninput="calcP()"></div>
+                </div>
+                <div class="field"><label>Total (calculado)</label><input type="text" id="pTotalCalc" readonly class="calc"></div>
+                <button class="btn btn-green" onclick="addProduto()">+ Adicionar à Lista</button>
+            </div>
+
+            <!-- LIST -->
+            <div class="card">
+                <div class="card-head"><h3>Itens da Lista</h3></div>
+                <div id="produtosList"></div>
+                <div class="empty" id="produtosEmpty"><div class="e-icon">🛒</div><p>Adicione itens ou tire foto do preço</p></div>
+            </div>
+        </div>
+
+        <!-- ════════ M2: FIXAS ════════ -->
+        <div class="page" id="pg-fixas">
+            <div class="page-title">🏠 Despesas Fixas</div>
+            <div class="page-sub">Alimentação puxa automático da Lista de Produtos</div>
+            <div class="alert amber"><span>ℹ️</span> <strong>"Alimentação"</strong> = total da Lista de Produtos.</div>
+            <div class="sum-row">
+                <div class="sum-card c-red"><div class="sum-label">Fixas</div><div class="sum-val red" id="fixasTotal">R$ 0,00</div></div>
+                <div class="sum-card c-amber"><div class="sum-label">🛒 Alimentação</div><div class="sum-val amber" id="alimTotal">R$ 0,00</div></div>
+            </div>
+            <button class="add-btn" onclick="openFixaModal()">+ Nova Despesa Fixa</button>
+            <div class="card"><div class="card-head"><h3>Despesas</h3></div><div id="fixasList"></div><div class="empty" id="fixasEmpty"><div class="e-icon">🏠</div><p>Nenhuma despesa fixa</p></div></div>
+        </div>
+
+        <!-- ════════ M3: RECEITAS ════════ -->
+        <div class="page" id="pg-receitas">
+            <div class="page-title">📥 Receitas</div>
+            <div class="page-sub">Salário, freelance, rendimentos</div>
+            <div class="sum-card c-green"><div class="sum-label">Total Receitas</div><div class="sum-val green" id="recTotal">R$ 0,00</div><div class="sum-sub" id="recCount">0 receitas</div></div>
+            <button class="add-btn" onclick="openRecModal()">+ Nova Receita</button>
+            <div class="card"><div class="card-head"><h3>Receitas</h3></div><div id="recList"></div><div class="empty" id="recEmpty"><div class="e-icon">📥</div><p>Nenhuma receita</p></div></div>
+        </div>
+
+        <!-- ════════ M4: OUTROS ════════ -->
+        <div class="page" id="pg-outros">
+            <div class="page-title">📋 Outros Gastos</div>
+            <div class="page-sub">Despesas avulsas e esporádicas</div>
+            <div class="sum-card c-purple"><div class="sum-label">Total Outros</div><div class="sum-val amber" id="outTotal">R$ 0,00</div><div class="sum-sub" id="outCount">0 gastos</div></div>
+            <button class="add-btn" onclick="openOutModal()">+ Novo Gasto Avulso</button>
+            <div class="card"><div class="card-head"><h3>Gastos</h3></div><div id="outList"></div><div class="empty" id="outEmpty"><div class="e-icon">📋</div><p>Nenhum gasto avulso</p></div></div>
+        </div>
+
+        <!-- ════════ M5: SALDO ════════ -->
+        <div class="page" id="pg-saldo">
+            <div class="page-title">⚖️ Saldo Final</div>
+            <div class="page-sub">Receitas − Despesas Fixas − Alimentação − Outros</div>
+            <div class="balance-box" id="balBox">
+                <div class="balance-label">Saldo do Mês</div>
+                <div class="balance-value" id="saldoVal">R$ 0,00</div>
+                <div class="balance-badge" id="saldoBadge">—</div>
+            </div>
+            <div class="breakdown">
+                <div class="bk-card" style="border-left:3px solid var(--green)">
+                    <h4 style="color:var(--green)">📥 Entradas</h4>
+                    <div class="bk-row"><span class="bl">Receitas</span><span class="bv" id="bkRec" style="color:var(--green)">R$ 0,00</span></div>
+                    <div class="bk-row total"><span class="bl">Total Entradas</span><span class="bv" id="bkRecT" style="color:var(--green)">R$ 0,00</span></div>
+                </div>
+                <div class="bk-card" style="border-left:3px solid var(--red)">
+                    <h4 style="color:var(--red)">📤 Saídas</h4>
+                    <div class="bk-row"><span class="bl">🏠 Despesas Fixas</span><span class="bv" id="bkFix">R$ 0,00</span></div>
+                    <div class="bk-row"><span class="bl">🛒 Alimentação</span><span class="bv" id="bkAli" style="color:var(--amber)">R$ 0,00</span></div>
+                    <div class="bk-row"><span class="bl">📋 Outros Gastos</span><span class="bv" id="bkOut">R$ 0,00</span></div>
+                    <div class="bk-row total"><span class="bl">Total Saídas</span><span class="bv" id="bkSaiT" style="color:var(--red)">R$ 0,00</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <div class="bn-item active" data-pg="produtos"><span class="bn-icon">🛒</span>Produtos</div>
+        <div class="bn-item" data-pg="fixas"><span class="bn-icon">🏠</span>Fixas</div>
+        <div class="bn-item" data-pg="receitas"><span class="bn-icon">📥</span>Receitas</div>
+        <div class="bn-item" data-pg="outros"><span class="bn-icon">📋</span>Outros</div>
+        <div class="bn-item" data-pg="saldo"><span class="bn-icon">⚖️</span>Saldo</div>
+    </nav>
+</div>
+
+<!-- MODALS -->
+<div class="modal-bg" id="mFixa">
+    <div class="modal">
+        <h2 id="mFixaTitle">Nova Despesa Fixa</h2>
+        <input type="hidden" id="efId">
+        <div class="field"><label>Nome da Despesa</label><input type="text" id="efNome" placeholder="Ex: Aluguel"></div>
+        <div class="field-row">
+            <div class="field"><label>Parcelas Restantes</label><input type="number" id="efParc" min="1" value="12" inputmode="numeric"></div>
+            <div class="field"><label>Valor Mensal (R$)</label><input type="text" id="efValor" placeholder="0,00" inputmode="decimal"></div>
+        </div>
+        <div class="field"><label>Observação (opcional)</label><input type="text" id="efObs" placeholder="Contrato, vencimento..."></div>
+        <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('mFixa')">Cancelar</button><button class="btn btn-green" onclick="saveFixa()">Salvar</button></div>
+    </div>
+</div>
+<div class="modal-bg" id="mRec">
+    <div class="modal">
+        <h2 id="mRecTitle">Nova Receita</h2>
+        <input type="hidden" id="erId">
+        <div class="field"><label>Data</label><input type="date" id="erData"></div>
+        <div class="field"><label>Descrição</label><input type="text" id="erDesc" placeholder="Salário, freelance..."></div>
+        <div class="field"><label>Valor (R$)</label><input type="text" id="erValor" placeholder="0,00" inputmode="decimal"></div>
+        <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('mRec')">Cancelar</button><button class="btn btn-green" onclick="saveRec()">Salvar</button></div>
+    </div>
+</div>
+<div class="modal-bg" id="mOut">
+    <div class="modal">
+        <h2 id="mOutTitle">Novo Gasto Avulso</h2>
+        <input type="hidden" id="eoId">
+        <div class="field"><label>Data</label><input type="date" id="eoData"></div>
+        <div class="field"><label>Descrição</label><input type="text" id="eoDesc" placeholder="Presente, conserto..."></div>
+        <div class="field"><label>Valor (R$)</label><input type="text" id="eoValor" placeholder="0,00" inputmode="decimal"></div>
+        <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('mOut')">Cancelar</button><button class="btn btn-green" onclick="saveOut()">Salvar</button></div>
+    </div>
+</div>
+<div class="toast-box" id="toastBox"></div>
+
+<script>
+/* ══════════════════════════════════════
+   DATA
+   ══════════════════════════════════════ */
+const LS={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set(k,v){localStorage.setItem(k,JSON.stringify(v))}};
+let produtos=LS.get('fp',[]),fixas=LS.get('ff',[]),receitas=LS.get('fr',[]),outros=LS.get('fo',[]);
+function save(){LS.set('fp',produtos);LS.set('ff',fixas);LS.set('fr',receitas);LS.set('fo',outros)}
+function nid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function pBRL(s){if(typeof s==='number')return s;if(!s)return 0;s=s.replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.');const n=parseFloat(s);return isNaN(n)?0:n}
+function fBRL(v){return'R$ '+Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function fDate(d){if(!d)return'—';return new Date(d+'T12:00:00').toLocaleDateString('pt-BR')}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function toast(m,t='warn'){const e=document.createElement('div');e.className='toast '+t;e.textContent=m;document.getElementById('toastBox').appendChild(e);setTimeout(()=>e.remove(),3000)}
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function today(){return new Date().toISOString().split('T')[0]}
+
+/* ═══ NAV ═══ */
+document.querySelectorAll('.bn-item').forEach(n=>{
+    n.addEventListener('click',()=>{
+        document.querySelectorAll('.bn-item').forEach(x=>x.classList.remove('active'));
+        n.classList.add('active');
+        document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+        document.getElementById('pg-'+n.dataset.pg).classList.add('active');
+        document.querySelector('.content').scrollTop=0;
+        renderAll();
+    });
+});
+
+/* ══════════════════════════════════════
+   CAMERA + OCR
+   ══════════════════════════════════════ */
+let camStream=null;
+let ocrSelectedIdx=-1;
+let ocrItems=[];
+
+async function openCamera(){
+    try{
+        camStream=await navigator.mediaDevices.getUserMedia({
+            video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}}
+        });
+        const video=document.getElementById('camVideo');
+        video.srcObject=camStream;
+        document.getElementById('camTrigger').style.display='none';
+        document.getElementById('camView').style.display='block';
+        document.getElementById('ocrResults').classList.remove('show');
+    }catch(e){
+        toast('Câmera indisponível: '+e.message,'error');
+    }
+}
+
+function closeCamera(){
+    if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}
+    document.getElementById('camView').style.display='none';
+    document.getElementById('camTrigger').style.display='block';
+    document.getElementById('camLoading').classList.remove('active');
+}
+
+function retakePhoto(){
+    document.getElementById('ocrResults').classList.remove('show');
+    openCamera();
+}
+
+async function capturePhoto(){
+    if(!camStream)return;
+    const video=document.getElementById('camVideo');
+    const canvas=document.getElementById('camCanvas');
+
+    canvas.width=video.videoWidth;
+    canvas.height=video.videoHeight;
+    const ctx=canvas.getContext('2d');
+    ctx.drawImage(video,0,0);
+
+    // stop camera while processing
+    camStream.getTracks().forEach(t=>t.stop());
+    camStream=null;
+    document.getElementById('camView').style.display='none';
+    document.getElementById('camLoading').classList.add('active');
+    document.getElementById('ocrPct').textContent='0%';
+
+    const imageData=canvas.toDataURL('image/png');
+
+    try{
+        const result=await Tesseract.recognize(imageData,'por',{
+            logger:m=>{
+                if(m.status==='recognizing text'){
+                    const pct=Math.round(m.progress*100);
+                    document.getElementById('ocrPct').textContent=pct+'%';
+                }
+            }
+        });
+
+        document.getElementById('camLoading').classList.remove('active');
+        processOcrResult(result.data.text,imageData);
+
+    }catch(e){
+        document.getElementById('camLoading').classList.remove('active');
+        toast('Erro ao processar imagem','error');
+        document.getElementById('camTrigger').style.display='block';
+    }
+}
+
+function processOcrResult(text,imgData){
+    const raw=document.getElementById('ocrRaw');
+    raw.textContent=text||'(nenhum texto reconhecido)';
+    raw.style.display='text'?'block':'none';
+
+    ocrItems=[];
+    ocrSelectedIdx=-1;
+
+    if(!text||!text.trim()){
+        document.getElementById('ocrItems').innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:.82rem">Nenhum preço reconhecido. Tente uma foto mais clara da etiqueta.</div>';
+        document.getElementById('ocrResults').classList.add('show');
+        document.getElementById('btnUseOcr').disabled=true;
+        return;
+    }
+
+    // ─── EXTRACT PRICES ───
+    // Patterns for Brazilian price tags:
+    // R$ 12,99  /  R$2,50  /  12,99  /  12.99  /  2 x R$ 5,99  etc.
+    const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
+
+    lines.forEach(line=>{
+        // Pattern 1: R$ followed by number
+        const rx1=/R\$\s*(\d{1,4}[.,]\d{2})/gi;
+        let match;
+        while((match=rx1.exec(line))!==null){
+            const val=match[1].replace(',','.');
+            const num=parseFloat(val);
+            if(num>0&&num<10000){
+                const context=line.replace(/R\$\s*\d[^\s]*/g,'').replace(/\s+/g,' ').trim();
+                ocrItems.push({price:num,priceStr:val.replace('.',','),name:context||'Item encontrado',line:line.trim()});
+            }
+        }
+
+        // Pattern 2: standalone number with comma decimal (likely price)
+        if(!rx1.test(line)){
+            const rx2=/(\d{1,3}[.,]\d{2})\b/g;
+            while((match=rx2.exec(line))!==null){
+                const val=match[1].replace(',','.');
+                const num=parseFloat(val);
+                if(num>0.5&&num<10000){
+                    const before=line.substring(0,match.index).trim();
+                    ocrItems.push({price:num,priceStr:val.replace('.',','),name:before||'Item encontrado',line:line.trim()});
+                }
+            }
+        }
+    });
+
+    // dedupe by price
+    const seen=new Set();
+    ocrItems=ocrItems.filter(i=>{
+        const k=i.price+'|'+i.name;
+        if(seen.has(k))return false;
+        seen.add(k);return true;
+    });
+
+    // sort by most likely price (R$ pattern first, then by value)
+    ocrItems.sort((a,b)=>{
+        const aHasR$=a.line.includes('R$')?0:1;
+        const bHasR$=b.line.includes('R$')?0:1;
+        return aHasR$-bHasR$||b.price-a.price;
+    });
+
+    const el=document.getElementById('ocrItems');
+    if(!ocrItems.length){
+        el.innerHTML='<div style="padding:12px;text-align:center;color:var(--text3);font-size:.82rem">Preços não identificados na imagem. Tente mais perto da etiqueta.</div>';
+        document.getElementById('btnUseOcr').disabled=true;
+    }else{
+        el.innerHTML=ocrItems.map((item,idx)=>`
+            <div class="ocr-item" onclick="selectOcrItem(${idx})" id="ocrItem${idx}">
+                <div class="ocr-name">${esc(item.name||'Produto')}</div>
+                <div class="ocr-price">${fBRL(item.price)}</div>
+                <div class="ocr-check" id="ocrCheck${idx}"></div>
+            </div>
+        `).join('');
+        document.getElementById('btnUseOcr').disabled=true;
+    }
+
+    document.getElementById('ocrResults').classList.add('show');
+}
+
+function selectOcrItem(idx){
+    document.querySelectorAll('.ocr-item').forEach(e=>e.classList.remove('selected'));
+    if(ocrSelectedIdx===idx){
+        ocrSelectedIdx=-1;
+        document.getElementById('btnUseOcr').disabled=true;
+    }else{
+        ocrSelectedIdx=idx;
+        document.getElementById('ocrItem'+idx).classList.add('selected');
+        document.getElementById('btnUseOcr').disabled=false;
+    }
+}
+
+function useSelectedOcr(){
+    if(ocrSelectedIdx<0||!ocrItems[ocrSelectedIdx])return;
+    const item=ocrItems[ocrSelectedIdx];
+
+    document.getElementById('pNome').value=item.name||'';
+    document.getElementById('pValor').value=item.priceStr;
+    document.getElementById('pQtd').value='1';
+    document.getElementById('pQtd').focus();
+
+    calcP();
+
+    document.getElementById('ocrResults').classList.remove('show');
+    document.getElementById('camTrigger').style.display='block';
+
+    toast('Preço '+fBRL(item.price)+' detectado! Confirme e salve.','success');
+}
+
+/* ══════════════════════════════════════
+   M1: PRODUTOS
+   ══════════════════════════════════════ */
+function calcP(){
+    const q=parseInt(document.getElementById('pQtd').value)||0;
+    const v=pBRL(document.getElementById('pValor').value);
+    document.getElementById('pTotalCalc').value=fBRL(q*v);
+}
+
+function addProduto(){
+    const nome=document.getElementById('pNome').value.trim();
+    const qtd=parseInt(document.getElementById('pQtd').value)||0;
+    const val=pBRL(document.getElementById('pValor').value);
+    const total=qtd*val;
+    if(!nome){toast('Informe o nome do produto','error');return}
+    if(qtd<=0){toast('Quantidade deve ser > 0','error');return}
+    if(val<=0){toast('Informe o valor unitário','error');return}
+    produtos.push({id:nid(),nome,qtd,vu:val,total});
+    save();
+    document.getElementById('pNome').value='';
+    document.getElementById('pQtd').value='1';
+    document.getElementById('pValor').value='';
+    document.getElementById('pTotalCalc').value='';
+    renderProdutos();
+    toast('Item adicionado!','success');
+}
+
+function delProduto(id){if(!confirm('Remover este item?'))return;produtos=produtos.filter(p=>p.id!==id);save();renderProdutos()}
+
+function renderProdutos(){
+    const total=produtos.reduce((s,p)=>s+p.total,0);
+    document.getElementById('listaTotal').textContent=fBRL(total);
+    document.getElementById('listaCount').textContent=produtos.length+' itens';
+    const el=document.getElementById('produtosList');
+    const empty=document.getElementById('produtosEmpty');
+    if(!produtos.length){el.innerHTML='';empty.style.display='block';return}
+    empty.style.display='none';
+    el.innerHTML=produtos.map(p=>`
+        <div class="item">
+            <div class="item-info">
+                <div class="item-name">${esc(p.nome)}</div>
+                <div class="item-meta"><span class="tag tag-blue">${p.qtd}x ${fBRL(p.vu)}</span></div>
+            </div>
+            <div class="item-val amber">${fBRL(p.total)}</div>
+            <div class="item-actions"><button class="btn-del" onclick="delProduto('${p.id}')">🗑️</button></div>
+        </div>
+    `).join('');
+}
+
+/* ══════════════════════════════════════
+   M2: FIXAS
+   ══════════════════════════════════════ */
+function aliTotal(){return produtos.reduce((s,p)=>s+p.total,0)}
+function openFixaModal(){document.getElementById('efId').value='';document.getElementById('efNome').value='';document.getElementById('efParc').value='12';document.getElementById('efValor').value='';document.getElementById('efObs').value='';document.getElementById('mFixaTitle').textContent='Nova Despesa Fixa';openModal('mFixa')}
+function openFixaEdit(id){const f=fixas.find(x=>x.id===id);if(!f)return;document.getElementById('efId').value=id;document.getElementById('efNome').value=f.nome;document.getElementById('efParc').value=f.parcelas;document.getElementById('efValor').value=f.valor.toFixed(2).replace('.',',');document.getElementById('efObs').value=f.obs||'';document.getElementById('mFixaTitle').textContent='Editar Despesa';openModal('mFixa')}
+function saveFixa(){const id=document.getElementById('efId').value,nome=document.getElementById('efNome').value.trim(),parc=parseInt(document.getElementById('efParc').value)||0,val=pBRL(document.getElementById('efValor').value),obs=document.getElementById('efObs').value.trim();if(!nome){toast('Informe o nome','error');return}if(parc<=0){toast('Parcelas > 0','error');return}if(val<=0){toast('Informe o valor','error');return}if(id){const f=fixas.find(x=>x.id===id);if(f){f.nome=nome;f.parcelas=parc;f.valor=val;f.obs=obs}}else fixas.push({id:nid(),nome,parcelas:parc,valor:val,obs});save();closeModal('mFixa');renderFixas()}
+function delFixa(id){if(!confirm('Remover?'))return;fixas=fixas.filter(f=>f.id!==id);save();renderFixas()}
+function renderFixas(){const total=fixas.reduce((s,f)=>s+f.valor,0),ali=aliTotal();document.getElementById('fixasTotal').textContent=fBRL(total);document.getElementById('alimTotal').textContent=fBRL(ali);const el=document.getElementById('fixasList'),empty=document.getElementById('fixasEmpty');if(!fixas.length){el.innerHTML='';empty.style.display='block';return}empty.style.display='none';el.innerHTML=fixas.map(f=>`<div class="item"><div class="item-info"><div class="item-name">${esc(f.nome)}</div><div class="item-meta"><span class="tag tag-red">${f.parcelas}x restantes</span>${f.obs?'<span style="color:var(--text3);font-size:.7rem">'+esc(f.obs)+'</span>':''}</div></div><div class="item-val red">${fBRL(f.valor)}</div><div class="item-actions"><button onclick="openFixaEdit('${f.id}')">✏️</button><button class="btn-del" onclick="delFixa('${f.id}')">🗑️</button></div></div>`).join('')}
+
+/* ══════════════════════════════════════
+   M3: RECEITAS
+   ══════════════════════════════════════ */
+function openRecModal(){document.getElementById('erId').value='';document.getElementById('erData').value=today();document.getElementById('erDesc').value='';document.getElementById('erValor').value='';document.getElementById('mRecTitle').textContent='Nova Receita';openModal('mRec')}
+function openRecEdit(id){const r=receitas.find(x=>x.id===id);if(!r)return;document.getElementById('erId').value=id;document.getElementById('erData').value=r.data;document.getElementById('erDesc').value=r.desc;document.getElementById('erValor').value=r.valor.toFixed(2).replace('.',',');document.getElementById('mRecTitle').textContent='Editar Receita';openModal('mRec')}
+function saveRec(){const id=document.getElementById('erId').value,data=document.getElementById('erData').value,desc=document.getElementById('erDesc').value.trim(),val=pBRL(document.getElementById('erValor').value);if(!data){toast('Informe a data','error');return}if(!desc){toast('Informe a descrição','error');return}if(val<=0){toast('Informe o valor','error');return}if(id){const r=receitas.find(x=>x.id===id);if(r){r.data=data;r.desc=desc;r.valor=val}}else receitas.push({id:nid(),data,desc,valor:val});save();closeModal('mRec');renderReceitas()}
+function delRec(id){if(!confirm('Remover?'))return;receitas=receitas.filter(r=>r.id!==id);save();renderReceitas()}
+function renderReceitas(){const total=receitas.reduce((s,r)=>s+r.valor,0);document.getElementById('recTotal').textContent=fBRL(total);document.getElementById('recCount').textContent=receitas.length+' receitas';const el=document.getElementById('recList'),empty=document.getElementById('recEmpty');const sorted=[...receitas].sort((a,b)=>b.data.localeCompare(a.data));if(!sorted.length){el.innerHTML='';empty.style.display='block';return}empty.style.display='none';el.innerHTML=sorted.map(r=>`<div class="item"><div class="item-info"><div class="item-name">${esc(r.desc)}</div><div class="item-meta"><span class="tag tag-green">${fDate(r.data)}</span></div></div><div class="item-val green">+ ${fBRL(r.valor)}</div><div class="item-actions"><button onclick="openRecEdit('${r.id}')">✏️</button><button class="btn-del" onclick="delRec('${r.id}')">🗑️</button></div></div>`).join('')}
+
+/* ══════════════════════════════════════
+   M4: OUTROS
+   ══════════════════════════════════════ */
+function openOutModal(){document.getElementById('eoId').value='';document.getElementById('eoData').value=today();document.getElementById('eoDesc').value='';document.getElementById('eoValor').value='';document.getElementById('mOutTitle').textContent='Novo Gasto Avulso';openModal('mOut')}
+function openOutEdit(id){const o=outros.find(x=>x.id===id);if(!o)return;document.getElementById('eoId').value=id;document.getElementById('eoData').value=o.data;document.getElementById('eoDesc').value=o.desc;document.getElementById('eoValor').value=o.valor.toFixed(2).replace('.',',');document.getElementById('mOutTitle').textContent='Editar Gasto';openModal('mOut')}
+function saveOut(){const id=document.getElementById('eoId').value,data=document.getElementById('eoData').value,desc=document.getElementById('eoDesc').value.trim(),val=pBRL(document.getElementById('eoValor').value);if(!data){toast('Informe a data','error');return}if(!desc){toast('Informe a descrição','error');return}if(val<=0){toast('Informe o valor','error');return}if(id){const o=outros.find(x=>x.id===id);if(o){o.data=data;o.desc=desc;o.valor=val}}else outros.push({id:nid(),data,desc,valor:val});save();closeModal('mOut');renderOutros()}
+function delOut(id){if(!confirm('Remover?'))return;outros=outros.filter(o=>o.id!==id);save();renderOutros()}
+function renderOutros(){const total=outros.reduce((s,o)=>s+o.valor,0);document.getElementById('outTotal').textContent=fBRL(total);document.getElementById('outCount').textContent=outros.length+' gastos';const el=document.getElementById('outList'),empty=document.getElementById('outEmpty');const sorted=[...outros].sort((a,b)=>b.data.localeCompare(a.data));if(!sorted.length){el.innerHTML='';empty.style.display='block';return}empty.style.display='none';el.innerHTML=sorted.map(o=>`<div class="item"><div class="item-info"><div class="item-name">${esc(o.desc)}</div><div class="item-meta"><span class="tag tag-amber">${fDate(o.data)}</span></div></div><div class="item-val red">− ${fBRL(o.valor)}</div><div class="item-actions"><button onclick="openOutEdit('${o.id}')">✏️</button><button class="btn-del" onclick="delOut('${o.id}')">🗑️</button></div></div>`).join('')}
+
+/* ══════════════════════════════════════
+   M5: SALDO
+   ══════════════════════════════════════ */
+function renderSaldo(){
+    const rT=receitas.reduce((s,r)=>s+r.valor,0),fT=fixas.reduce((s,f)=>s+f.valor,0),aT=aliTotal(),oT=outros.reduce((s,o)=>s+o.valor,0),saidas=fT+aT+oT,saldo=rT-saidas;
+    const box=document.getElementById('balBox'),val=document.getElementById('saldoVal'),badge=document.getElementById('saldoBadge');
+    if(saldo>0){box.className='balance-box positive';val.className='balance-value positive';val.textContent='+ '+fBRL(saldo);badge.className='balance-badge pos';badge.textContent='✅ Sobrou '+fBRL(saldo)}
+    else if(saldo<0){box.className='balance-box negative';val.className='balance-value negative';val.textContent='− '+fBRL(Math.abs(saldo));badge.className='balance-badge neg';badge.textContent='⚠️ Faltou '+fBRL(Math.abs(saldo))}
+    else{box.className='balance-box';val.className='balance-value';val.textContent=fBRL(0);badge.className='balance-badge zero';badge.textContent='— Saldo zerado'}
+    document.getElementById('bkRec').textContent=fBRL(rT);document.getElementById('bkRecT').textContent=fBRL(rT);document.getElementById('bkFix').textContent=fBRL(fT);document.getElementById('bkAli').textContent=fBRL(aT);document.getElementById('bkOut').textContent=fBRL(oT);document.getElementById('bkSaiT').textContent=fBRL(saidas);
+}
+
+function renderAll(){renderProdutos();renderFixas();renderReceitas();renderOutros();renderSaldo()}
+renderAll();
+</script>
+</body>
+</html>
